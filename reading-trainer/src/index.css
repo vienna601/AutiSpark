@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Comic Sans MS', cursive, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.reading-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 3px solid #3b82f6;
+  min-height: 500px;
+}
+
+.video-card {
+  background: rgba(147, 112, 219, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(147, 112, 219, 0.3);
+}
+
+.goal-card {
+  background: rgba(147, 112, 219, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(147, 112, 219, 0.3);
+}
+
+/* Force the Tavus iframe to take full size */
+.tavus-video-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e879f9 0%, #c084fc 100%);
+}
+
+.tavus-video-container iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  border-radius: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.answer-button {
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.answer-button:hover {
+  transform: scale(1.05);
+}
+
+.answer-button:active {
+  transform: scale(0.95);
+}
+
+.spark-icon {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+}
+
+.reading-content {
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.story-image {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  font-size: 4rem;
+  border: 2px solid rgba(156, 163, 175, 0.3);
+}
+
+.question-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.option-button {
+  background: rgba(168, 162, 255, 0.15);
+  border: 2px solid rgba(168, 162, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.option-button:hover {
+  background: rgba(168, 162, 255, 0.25);
+  border-color: rgba(168, 162, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 162, 255, 0.2);
+}
+
+.option-button.correct {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: rgb(21, 128, 61);
+}
+
+.option-button.incorrect {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: rgb(153, 27, 27);
+}
+
+.video-placeholder {
+  background: linear-gradient(135deg, #e879f9 0%, #c084fc 100%);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .question-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .story-image {
+    min-height: 120px;
+    font-size: 3rem;
+  }
+  
+  .reading-card, .video-card, .goal-card {
+    margin: 0.5rem;
+  }
+}
