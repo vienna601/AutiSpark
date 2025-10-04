@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/comfortaa": "^5.2.8",
     "next": "15.5.3",
     "react": "^18",
-    "react-dom": "^18",
-    "@fontsource/comfortaa": "^5.2.8"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
