@@ -26,3 +26,4 @@ dist-ssr
 node_modules/
 README.md
 .env
+venv/
