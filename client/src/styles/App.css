@@ -1,6 +1,6 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  /*max-width: 1280px;*/
+  margin: 0;
   padding: 2rem;
   text-align: center;
 }
@@ -39,4 +39,129 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Reset & fix white gap */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ====== General Layout ====== */
+.homepage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #a8c4c3; /* full background */
+  max-height: 100%;
+  min-width: 100%;
+  font-family: Comfortaa, sans-serif;
+  box-sizing: border-box;
+  padding: 60px 20px 40px; /* space at top */
+  margin-right: 0px;
+}
+
+/* ====== Title ====== */
+.homepage-title {
+  width: 100%;
+  text-align: center;
+  font-size: 70px; /* much bigger */
+  font-weight: 900;
+  color: #524944;
+  margin: 0;
+  margin-top: 50px; /* pushes down from top */
+  margin-bottom: 8px;
+}
+
+/* ====== Subtitle ====== */
+.homepage-subtitle {
+  width: 100%;
+  text-align: center;
+  color: #60554f;
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 20px; /* pushes down closer to buttons */
+}
+
+/* ====== Button Container ====== */
+.button-container {
+  display: flex;
+  gap: 70px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* ====== Feature Wrapper (button + label) ====== */
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ====== Feature Buttons ====== */
+.feature-button {
+  width: 230px;
+  height: 230px;
+  border-radius: 30px;
+  border: 18px solid rgba(246, 233, 226, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.feature-button:hover {
+  transform: scale(1.05);
+}
+
+/* ====== Individual Button Colors ====== */
+.speech {
+  background: #c7d9b2;
+}
+
+.writing {
+  background: #c8def5;
+}
+
+.reading {
+  background: #e4d7f5;
+}
+
+/* ====== Icons ====== */
+.icon {
+  width: 140px;
+  height: 140px;
+  opacity: 0.5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.speech-icon {
+  background-image: url("/assets/speaking.png");
+}
+
+.writing-icon {
+  background-image: url("/assets/writing.png");
+}
+
+.reading-icon {
+  background-image: url("/assets/reading.png");
+}
+
+/* ====== Labels ====== */
+.feature-label {
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #524944;
 }
