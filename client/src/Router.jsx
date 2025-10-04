@@ -10,7 +10,7 @@ export default function AppRouter() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<ReadingPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/placement"
