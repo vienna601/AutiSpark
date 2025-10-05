@@ -14,7 +14,9 @@ const PlacementPage = () => {
   return (
     <div className="placementpage">
       {/* Subtitle */}
-      <p className="placementpage-subtitle">Please complete the following assessments for the best effects:</p>
+      <p className="placementpage-subtitle">
+        Please complete the following assessments for the best effects:
+      </p>
 
       {/* Button Container */}
       <div className="button-container">
