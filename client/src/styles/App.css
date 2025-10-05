@@ -59,14 +59,14 @@ body,
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  background: #a8c4c3; /* full background */
-  max-height: 100%;
-  min-width: 100%;
-  font-family: Comfortaa, sans-serif;
+  justify-content: center; /* centers vertically and horizontally */
+  background: #a8c4c3; /* fills whole screen */
+  min-height: 100vh;
+  width: 100vw;
+  font-family: "Comfortaa", sans-serif;
   box-sizing: border-box;
-  padding: 60px 20px 40px; /* space at top */
-  margin-right: 0px;
+  padding: 2rem;
+  margin: 0;
 }
 
 /* ====== Title ====== */

@@ -1,12 +1,17 @@
 /* SpeechTherapyPage.css */
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
 
-/* Page Container */
 .speech-page {
-  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* move everything up */
   background: #a8c4c3;
-  padding: 16px;
-  font-family: "Comfortaa", cursive;
+  min-height: 100vh;
+  width: 100vw;
+  font-family: "Comfortaa", sans-serif;
+  box-sizing: border-box;
+  padding: 2rem 2rem 0 2rem; /* add more space at top if needed */
+  margin: 0;
 }
 
 /* Header */
@@ -73,20 +78,20 @@
   gap: 5px;
 }
 
-/* Main Content */
 .main-content {
   display: flex;
   gap: 30px;
   justify-content: center;
+  align-items: flex-start;
 }
 
 /* Left Rectangle */
 .left-rectangle {
-  width: 600px;
-  height: 435px;
+  width: 60%;
+  height: 550px;
   flex-shrink: 0;
   background: #f6e9e2;
-  border-radius: 10px;
+  border-radius: 25px;
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -128,7 +133,7 @@
 
 /* Info Blocks (Encouragement, Hints, Goal) */
 .info-block {
-  width: 230px;
+  width: 100%;
   height: 106px;
   flex-shrink: 0;
   border-radius: 25px;
