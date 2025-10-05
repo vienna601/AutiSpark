@@ -15,12 +15,12 @@ export default function AppRouter() {
   return (
     <Router>
       <Routes>
-        {/*<Route path="/" element={<LoginPage />} />*/}
+        <Route path="/" element={<LoginPage />} />
         <Route path="/placement" element={<PlacementPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/reading" element={<ReadingPage />} />
         <Route path="/speaking" element={<SpeakingPage />} />
-        <Route path="/" element={<CongratsPage />} />
+        <Route path="/congrats" element={<CongratsPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/placement"
