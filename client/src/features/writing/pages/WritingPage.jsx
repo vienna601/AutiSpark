@@ -1,20 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Edit3, Save, RotateCcw, Mic, MicOff, Home, Eye, MessageSquare } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import WritingPrompt from '../components/WritingPrompt';
-import FeedbackPanel from '../components/FeedbackPanel';
-import WritingHints from '../components/WritingHints';
-import { WritingFeedbackService } from '../services/writingFeedbackService';
+import {
+  Edit3,
+  Save,
+  RotateCcw,
+  Mic,
+  MicOff,
+  Home,
+  Eye,
+  MessageSquare,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import WritingPrompt from "../components/WritingPrompt";
+import FeedbackPanel from "../components/FeedbackPanel";
+import WritingHints from "../components/WritingHints";
+import { WritingFeedbackService } from "../services/writingFeedbackService";
 import "../writing.css";
 
 export default function WritingPage() {
   const [currentPrompt, setCurrentPrompt] = useState({
-    prompt: "Write about your favorite animal. What does it look like? What does it like to do?",
+    prompt:
+      "Write about your favorite animal. What does it look like? What does it like to do?",
     goal: "write a structured response",
     expectedLength: "3-5 sentences",
-    tips: ["Start with a sentence about your name", "Use describing words like colors and sizes"]
+    tips: [
+      "Start with a sentence about your name",
+      "Use describing words like colors and sizes",
+    ],
   });
-  
+
   const [studentResponse, setStudentResponse] = useState("");
   const [feedback, setFeedback] = useState(null);
   const [realTimeFeedback, setRealTimeFeedback] = useState(null);
@@ -29,33 +42,33 @@ export default function WritingPage() {
 
   // Add this test function
   const testGeminiConnection = async () => {
-    console.log('🧪 Testing Gemini API connection...');
+    console.log("🧪 Testing Gemini API connection...");
     const result = await feedbackService.current.testConnection();
     if (result) {
-      alert('✅ Gemini API connection successful!');
+      alert("✅ Gemini API connection successful!");
     } else {
-      alert('❌ Gemini API connection failed. Check console for details.');
+      alert("❌ Gemini API connection failed. Check console for details.");
     }
   };
 
   // Initialize speech recognition
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window) {
+    if ("webkitSpeechRecognition" in window) {
       const recognition = new window.webkitSpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = "en-US";
 
       recognition.onresult = (event) => {
-        let finalTranscript = '';
+        let finalTranscript = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + ' ';
+            finalTranscript += event.results[i][0].transcript + " ";
           }
         }
-        
+
         if (finalTranscript) {
-          setStudentResponse(prev => prev + finalTranscript);
+          setStudentResponse((prev) => prev + finalTranscript);
         }
       };
 
@@ -64,7 +77,7 @@ export default function WritingPage() {
       };
 
       recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         setIsListening(false);
       };
 
@@ -80,7 +93,10 @@ export default function WritingPage() {
 
   // Update word count and get real-time feedback
   useEffect(() => {
-    const words = studentResponse.trim().split(/\s+/).filter(word => word.length > 0);
+    const words = studentResponse
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0);
     setWordCount(words.length);
 
     // Debounce real-time feedback
@@ -97,7 +113,7 @@ export default function WritingPage() {
           );
           setRealTimeFeedback(realTime);
         } catch (error) {
-          console.error('Error getting real-time feedback:', error);
+          console.error("Error getting real-time feedback:", error);
         }
       }, 2000); // Wait 2 seconds after user stops typing
     }
@@ -115,7 +131,7 @@ export default function WritingPage() {
 
   const toggleSpeechRecognition = () => {
     if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser');
+      alert("Speech recognition is not supported in your browser");
       return;
     }
 
@@ -131,14 +147,17 @@ export default function WritingPage() {
   const generateNewPrompt = async () => {
     setIsGeneratingPrompt(true);
     try {
-      const newPrompt = await feedbackService.current.generatePrompt('beginner', 'personal');
+      const newPrompt = await feedbackService.current.generatePrompt(
+        "beginner",
+        "personal"
+      );
       setCurrentPrompt(newPrompt);
       // Reset everything when getting new prompt
-      setStudentResponse('');
+      setStudentResponse("");
       setFeedback(null);
       setRealTimeFeedback(null);
     } catch (error) {
-      console.error('Error generating prompt:', error);
+      console.error("Error generating prompt:", error);
     } finally {
       setIsGeneratingPrompt(false);
     }
@@ -146,7 +165,7 @@ export default function WritingPage() {
 
   const analyzeFeedback = async () => {
     if (!studentResponse.trim()) {
-      alert('Please write something first!');
+      alert("Please write something first!");
       return;
     }
 
@@ -160,14 +179,14 @@ export default function WritingPage() {
       setFeedback(result);
       setRealTimeFeedback(null); // Clear real-time feedback when we get full feedback
     } catch (error) {
-      console.error('Error getting feedback:', error);
+      console.error("Error getting feedback:", error);
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   const resetWriting = () => {
-    setStudentResponse('');
+    setStudentResponse("");
     setFeedback(null);
     setRealTimeFeedback(null);
     setWordCount(0);
@@ -183,15 +202,17 @@ export default function WritingPage() {
       text: studentResponse,
       feedback: feedback,
       timestamp: new Date().toISOString(),
-      wordCount
+      wordCount,
     };
-    
+
     // Save to localStorage
-    const savedWritings = JSON.parse(localStorage.getItem('autispark_writings') || '[]');
+    const savedWritings = JSON.parse(
+      localStorage.getItem("autispark_writings") || "[]"
+    );
     savedWritings.push(writingData);
-    localStorage.setItem('autispark_writings', JSON.stringify(savedWritings));
-    
-    alert('Writing saved successfully!');
+    localStorage.setItem("autispark_writings", JSON.stringify(savedWritings));
+
+    alert("Writing saved successfully!");
   };
 
   return (
@@ -225,7 +246,7 @@ export default function WritingPage() {
         {/* Left Section - Prompt and Writing Area */}
         <div className="left-section">
           {/* Writing Prompt */}
-          <WritingPrompt 
+          <WritingPrompt
             prompt={currentPrompt}
             onNewPrompt={generateNewPrompt}
             isGenerating={isGeneratingPrompt}
@@ -238,18 +259,18 @@ export default function WritingPage() {
               <div className="controls">
                 <button
                   onClick={toggleSpeechRecognition}
-                  className={`control-button ${isListening ? 'listening' : ''}`}
+                  className={`control-button ${isListening ? "listening" : ""}`}
                 >
                   {isListening ? <MicOff size={16} /> : <Mic size={16} />}
-                  {isListening ? 'Stop Dictation' : 'Start Dictation'}
+                  {isListening ? "Stop Dictation" : "Start Dictation"}
                 </button>
-                
+
                 <button
                   onClick={analyzeFeedback}
                   disabled={!studentResponse.trim() || isAnalyzing}
                   className="analyze-button"
                 >
-                  {isAnalyzing ? 'Analyzing...' : 'Get Feedback'}
+                  {isAnalyzing ? "Analyzing..." : "Get Feedback"}
                 </button>
               </div>
             </div>
@@ -258,7 +279,9 @@ export default function WritingPage() {
             <div className="comment-section">
               <MessageSquare className="comment-icon" size={20} />
               <span className="comment-text">
-                comment: {currentPrompt.tips?.[0] || "take your time and express your thoughts clearly."}
+                comment:{" "}
+                {currentPrompt.tips?.[0] ||
+                  "take your time and express your thoughts clearly."}
               </span>
             </div>
 
@@ -276,7 +299,7 @@ export default function WritingPage() {
               <div className="stats">
                 {wordCount} words • {studentResponse.length} characters
               </div>
-              
+
               <div className="action-controls">
                 <button
                   onClick={saveWriting}
@@ -286,11 +309,8 @@ export default function WritingPage() {
                   <Save size={16} />
                   Save
                 </button>
-                
-                <button
-                  onClick={resetWriting}
-                  className="reset-button"
-                >
+
+                <button onClick={resetWriting} className="reset-button">
                   <RotateCcw size={16} />
                   Reset
                 </button>
@@ -302,7 +322,7 @@ export default function WritingPage() {
         {/* Right Section - Hints and Feedback */}
         <div className="right-section">
           {/* AI Writing Hints */}
-          <WritingHints 
+          <WritingHints
             currentText={studentResponse}
             prompt={currentPrompt.prompt}
             goal={currentPrompt.goal}
@@ -311,7 +331,7 @@ export default function WritingPage() {
 
           {/* Feedback Panel */}
           <div className="feedback-container">
-            <FeedbackPanel 
+            <FeedbackPanel
               feedback={feedback}
               isAnalyzing={isAnalyzing}
               realTimeFeedback={realTimeFeedback}
