@@ -7,7 +7,7 @@ def new_user_document(user_info):
         "email": user_info.get("email"),
         "name": user_info.get("name"),
         "picture": user_info.get("picture"),
-        "role": (user_info.get("https://autispark/roles") or ["student"])[0],
+        "role": (user_info.get("https://dev-27p4sca2smt73jw6.us.auth0.com/api/v2/roles") or ["student"])[0],
         "placementResults": None,
         "level": None,
         "progress": {

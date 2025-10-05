@@ -1,64 +1,50 @@
-from fastapi import APIRouter, Depends, HTTPException
-from datetime import datetime
+from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from server.db.connection import users_collection
 from server.auth.verify_jwt import verify_jwt
 
 router = APIRouter()
 
-def determine_level(scores: dict):
-    """Example logic to convert placement test scores into levels (1–5)."""
-    avg = (scores["readingScore"] + scores["writingScore"] + scores["speakingScore"]) / 3
-
-    if avg < 4:
-        return 1
-    elif avg < 7:
-        return 2
-    elif avg < 9:
-        return 3
-    elif avg < 11:
-        return 4
-    else:
-        return 5
-
-
 @router.post("/placement")
-def save_placement_results(data: dict, user=Depends(verify_jwt)):
-    """
-    Save placement test results and update literacy levels in MongoDB.
-    Requires a valid Auth0 token.
-    """
-    user_id = user["sub"]
+async def save_placement_results(request: Request, payload: dict = Depends(verify_jwt)):
+    body = await request.json()
+    user_id = body.get("user_id")
 
-    # Validate incoming data
-    required_fields = {"readingScore", "writingScore", "speakingScore"}
-    if not required_fields.issubset(data.keys()):
-        raise HTTPException(status_code=400, detail="Missing placement test fields")
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Missing user_id")
 
-    # Calculate levels
-    new_level = determine_level(data)
-
-    # Update MongoDB record
     update = {
         "$set": {
-            "placementResults": data,
-            "level": {
-                "reading": new_level,
-                "writing": new_level,
-                "speaking": new_level,
-            },
-            "updatedAt": datetime.utcnow()
+            "readingScore": body.get("readingScore"),
+            "writingScore": body.get("writingScore"),
+            "speakingScore": body.get("speakingScore"),
         }
     }
 
+    # ✅ Try to update existing user
     result = users_collection.update_one({"_id": user_id}, update)
 
+    # ✅ If not found, create a new document
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="User not found in database")
+        new_user = {
+            "_id": user_id,
+            "readingScore": body.get("readingScore"),
+            "writingScore": body.get("writingScore"),
+            "speakingScore": body.get("speakingScore"),
+        }
+        users_collection.insert_one(new_user)
 
-    return {
-        "message": "Placement results saved successfully",
-        "level": new_level
-    }
+    # Example logic: compute placement level
+    avg = (body["readingScore"] + body["writingScore"] + body["speakingScore"]) / 3
+    if avg >= 80:
+        level = "Advanced"
+    elif avg >= 50:
+        level = "Intermediate"
+    else:
+        level = "Beginner"
+
+    return JSONResponse({"message": "Placement saved successfully", "level": level})
+
 
 
 @router.get("/placement")

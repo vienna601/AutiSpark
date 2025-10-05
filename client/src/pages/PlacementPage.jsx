@@ -1,15 +1,27 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Button from "@/components/ui/Button";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export default function PlacementPage() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently, signout } = useAuth();
+  const navigate = useNavigate();
   const [scores, setScores] = useState({ reading: 0, writing: 0, speaking: 0 });
   const [message, setMessage] = useState("");
 
+  const handleLogout = () => {
+    signout();
+    navigate("/login");
+  };
+
   const handleSubmit = async () => {
     try {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently({
+        audience: "https://dev-27p4sca2smt73jw6.us.auth0.com/api/v2/",
+      });
+      console.log("Token being sent:", token);
+      console.log("User ID being sent:", user.sub);
+
       const res = await fetch("http://localhost:8000/api/placement", {
         method: "POST",
         headers: {
@@ -17,6 +29,7 @@ export default function PlacementPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          user_id: user.sub,
           readingScore: scores.reading,
           writingScore: scores.writing,
           speakingScore: scores.speaking,
@@ -66,6 +79,12 @@ export default function PlacementPage() {
       <Button onClick={handleSubmit}>Submit Placement</Button>
 
       {message && <p className="mt-4 text-green-600">{message}</p>}
+      <Button
+        onClick={handleLogout}
+        className="mt-6 bg-red-500 text-white hover:bg-red-600"
+      >
+        Log Out
+      </Button>
     </div>
   );
 }

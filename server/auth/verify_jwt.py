@@ -5,7 +5,7 @@ import requests
 
 security = HTTPBearer()
 
-AUTH0_DOMAIN = "your-tenant-name.us.auth0.com"
+AUTH0_DOMAIN = "dev-27p4sca2smt73jw6.us.auth0.com"
 API_AUDIENCE = "https://dev-27p4sca2smt73jw6.us.auth0.com/api/v2/"
 ALGORITHMS = ["RS256"]
 
@@ -19,9 +19,10 @@ def verify_jwt(token: str = Security(security)):
             (key for key in jwks["keys"] if key["kid"] == unverified_header["kid"]),
             None
         )
+
         if not rsa_key:
             raise HTTPException(status_code=401, detail="Invalid token header")
-
+        
         payload = jwt.decode(
             token.credentials,
             key={
@@ -39,4 +40,5 @@ def verify_jwt(token: str = Security(security)):
     except Exception:
         print("❌ JWT verification failed:", str(Exception))
         raise HTTPException(status_code=401, detail="Token verification failed")
+    
 

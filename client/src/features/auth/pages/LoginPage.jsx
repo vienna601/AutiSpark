@@ -1,50 +1,17 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/Button";
 
 export default function LoginPage() {
-  const {
-    loginWithRedirect,
-    isAuthenticated,
-    isLoading,
-    user,
-    getAccessTokenSilently,
-  } = useAuth0();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Run only after Auth0 finishes loading
-    if (isLoading) return;
-
-    const handleLogin = async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        // Call your FastAPI /api/me route to sync user
-        await fetch("http://localhost:8000/api/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        // Decode token to check role (optional)
-        const decoded = JSON.parse(atob(token.split(".")[1]));
-        const roles = decoded["https://autispark/roles"] || [];
-        const role = roles.includes("teacher") ? "teacher" : "student";
-
-        // Redirect based on role
-        if (role === "teacher") {
-          navigate("/dashboard", { replace: true });
-        } else {
-          navigate("/placement", { replace: true });
-        }
-      } catch (err) {
-        console.error("Auth0 redirect error:", err);
-      }
-    };
-
-    if (isAuthenticated && user) {
-      handleLogin();
+    if (isAuthenticated) {
+      navigate("/placement");
     }
-  }, [isAuthenticated, isLoading, user, navigate, getAccessTokenSilently]);
+  }, [isAuthenticated, navigate]);
 
   if (isLoading) {
     return (
@@ -60,9 +27,7 @@ export default function LoginPage() {
       <p className="mb-6 text-gray-600">
         Log in to start your literacy journey.
       </p>
-      <Button onClick={() => loginWithRedirect({ prompt: "login" })}>
-        Log In
-      </Button>
+      <Button onClick={login}>Log In</Button>
     </div>
   );
 }
