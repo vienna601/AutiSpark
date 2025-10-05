@@ -1,71 +1,58 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
-import Button from "@/components/ui/Button";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/App.css";
+import "../styles/PlacementPage.css";
 
-export default function PlacementPage() {
-  const { getAccessTokenSilently } = useAuth0();
-  const [scores, setScores] = useState({ reading: 0, writing: 0, speaking: 0 });
-  const [message, setMessage] = useState("");
+import logoIcon from "../assets/logo.png";
+import speechIcon from "../assets/speaking.png";
+import writingIcon from "../assets/writing.png";
+import readingIcon from "../assets/reading.png";
 
-  const handleSubmit = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-      const res = await fetch("http://localhost:8000/api/placement", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          readingScore: scores.reading,
-          writingScore: scores.writing,
-          speakingScore: scores.speaking,
-        }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setMessage(`${data.message} | Level: ${data.level}`);
-      } else {
-        setMessage(`Error: ${data.detail || data.message}`);
-      }
-    } catch (error) {
-      console.error("Error submitting placement:", error);
-      setMessage("Error submitting placement test.");
-    }
-  };
+const PlacementPage = () => {
+  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <h1 className="text-2xl font-bold mb-6">Placement Test</h1>
+    <div className="placementpage">
+      {/* Subtitle */}
+      <p className="placementpage-subtitle">Please complete the following assessments for the best effects:</p>
 
-      <label>Reading Score:</label>
-      <input
-        type="number"
-        value={scores.reading}
-        onChange={(e) => setScores({ ...scores, reading: +e.target.value })}
-        className="border p-2 mb-3"
-      />
+      {/* Button Container */}
+      <div className="button-container">
+        {/* Speech */}
+        <div className="feature" onClick={() => navigate("/speaking")}>
+          <div className="feature-button speech">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${speechIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Speech</p>
+        </div>
 
-      <label>Writing Score:</label>
-      <input
-        type="number"
-        value={scores.writing}
-        onChange={(e) => setScores({ ...scores, writing: +e.target.value })}
-        className="border p-2 mb-3"
-      />
+        {/* Writing */}
+        <div className="feature" onClick={() => navigate("/writing")}>
+          <div className="feature-button writing">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${writingIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Writing</p>
+        </div>
 
-      <label>Speaking Score:</label>
-      <input
-        type="number"
-        value={scores.speaking}
-        onChange={(e) => setScores({ ...scores, speaking: +e.target.value })}
-        className="border p-2 mb-3"
-      />
-
-      <Button onClick={handleSubmit}>Submit Placement</Button>
-
-      {message && <p className="mt-4 text-green-600">{message}</p>}
+        {/* Reading */}
+        <div className="feature" onClick={() => navigate("/reading")}>
+          <div className="feature-button reading">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${readingIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Reading</p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PlacementPage;
