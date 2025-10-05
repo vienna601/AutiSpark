@@ -16,7 +16,8 @@ export default function AppRouter() {
       <Routes>
         <Route path="/HomePage" element={<HomePage />} />
         <Route path="/writing" element={<WritingPage />} />
-        <Route path="/" element={<SpeakingPage />} />
+        <Route path="/reading" element={<ReadingPage />} />
+        <Route path="/speaking" element={<SpeakingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/placement"
