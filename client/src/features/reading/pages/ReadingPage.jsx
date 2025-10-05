@@ -62,8 +62,6 @@ export default function ReadingPage() {
               The cat, Mittens, sat on the sunny windowsill. He watched a red bird hop on the green grass outside. Mittens wiggled his tail, dreaming of a chase.
               The cat, Mittens, sat on the sunny windowsill. He watched a red bird hop on the green grass outside. Mittens wiggled his tail, dreaming of a chase.
               The cat, Mittens, sat on the sunny windowsill. He watched a red bird hop on the green grass outside. Mittens wiggled his tail, dreaming of a chase.
-              The cat, Mittens, sat on the sunny windowsill. He watched a red bird hop on the green grass outside. Mittens wiggled his tail, dreaming of a chase.
-              The cat, Mittens, sat on the sunny windowsill. He watched a red bird hop on the green grass outside. Mittens wiggled his tail, dreaming of a chase.
             </div>
           </div>
 
