@@ -134,9 +134,8 @@
 
 /* Sign In Button */
 .sign-in-button {
-  width: 100%;
   max-width: 250px;
-  padding: 15px 40px;
+  padding: 15px 50px;
   margin: 20px auto 0;
   border: none;
   border-radius: 30px;
