@@ -146,7 +146,7 @@ export default function ReadingPage() {
       <div className="header">
         <div className="header-left">
           <div className="icon-container">
-            <Book size={32} stroke="#8b5cf6" />
+            <Book size={32} stroke="#9C92B9" />
           </div>
           <div className="page-heading">Reading Comprehension</div>
         </div>
@@ -171,7 +171,7 @@ export default function ReadingPage() {
           {/* Difficulty Selection */}
           <div className="difficulty-section">
             <h2 className="difficulty-title">
-              <Target size={24} stroke="#8b5cf6" />
+              <Target size={24} stroke="#9C92B9" />
               Choose Your Level
             </h2>
             <div className="difficulty-grid">
@@ -215,7 +215,7 @@ export default function ReadingPage() {
                 >
                   <div className="story-header">
                     <h3 className="story-title">{story.title}</h3>
-                    <ChevronRight size={24} stroke="#8b5cf6" />
+                    <ChevronRight size={24} stroke="#9C92B9" />
                   </div>
                   <p className="story-preview">
                     {story.story.substring(0, 150)}...

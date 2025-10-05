@@ -5,6 +5,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
   padding: 1rem;
+  font-family: "Comfortaa", sans-serif !important;
 }
 
 /* Header */
@@ -94,14 +95,14 @@
 }
 
 .difficulty-card:hover {
-  border-color: #8b5cf6;
+  border-color: #9c92b9;
   background: #f5f3ff;
 }
 
 .difficulty-card.selected {
-  border-color: #8b5cf6;
+  border-color: #9c92b9;
   background: #f5f3ff;
-  color: #7c3aed;
+  color: #9c92b9;
 }
 
 .difficulty-number {
@@ -118,7 +119,7 @@
 }
 
 .difficulty-card.selected .difficulty-number {
-  background: #8b5cf6;
+  background: #9c92b9;
 }
 
 /* Story Selection */
@@ -145,7 +146,7 @@
 }
 
 .story-card:hover {
-  border-color: #8b5cf6;
+  border-color: #9c92b9;
   background: #f5f3ff;
   transform: translateY(-2px);
 }
@@ -176,14 +177,15 @@
 }
 
 .question-count {
-  color: #8b5cf6;
+  color: #9c92b9;
   font-weight: 600;
   font-size: 0.875rem;
 }
 
 .start-button {
-  background: #8b5cf6;
+  background: #9c92b9;
   color: white;
+  font-family: "Comfortaa", sans-serif;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -228,7 +230,7 @@
 }
 
 .question-progress {
-  color: #8b5cf6;
+  color: #9c92b9;
   font-weight: 600;
 }
 
@@ -331,7 +333,7 @@
 }
 
 .hint-button {
-  background: #3b82f6;
+  background: #b9aedc;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -353,7 +355,7 @@
 }
 
 .submit-button {
-  background: #8b5cf6;
+  background: #b9aedc;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -412,7 +414,7 @@
 }
 
 .tavus-header {
-  background: #8b5cf6;
+  background: #9c92b9;
   color: white;
   padding: 0.75rem 1rem;
   display: flex;
@@ -436,7 +438,7 @@
 }
 
 .tavus-button {
-  background: #8b5cf6;
+  background: #9c92b9;
   color: white;
   border: none;
   padding: 1rem;
@@ -564,7 +566,7 @@
 }
 
 .progress-fill {
-  background: #8b5cf6;
+  background: #9c92b9;
   height: 100%;
   transition: width 0.3s ease;
 }
@@ -662,7 +664,7 @@
 .score-display {
   font-size: 3rem;
   font-weight: bold;
-  color: #8b5cf6;
+  color: #9c92b9;
   margin-bottom: 0.5rem;
 }
 
@@ -678,7 +680,7 @@
 }
 
 .back-button {
-  background: #8b5cf6;
+  background: #9c92b9;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -688,7 +690,7 @@
 }
 
 .back-button:hover {
-  background: #7c3aed;
+  background: #9c92b9;
 }
 
 /* Tavus Reading Assistant Styles */
@@ -713,7 +715,7 @@
 }
 
 .tavus-minimized .minimize-button {
-  background: #8b5cf6;
+  background: #9c92b9;
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -737,7 +739,7 @@
 }
 
 .assistant-header {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #9c92b9 0%, #9c92b9 100%);
   color: white;
   padding: 1rem;
   display: flex;
@@ -823,7 +825,7 @@
   justify-content: center;
   margin: 0 auto;
   font-size: 2.5rem;
-  border: 3px solid #8b5cf6;
+  border: 3px solid #9c92b9;
 }
 
 .call-setup-corner h4 {
@@ -921,7 +923,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid #8b5cf6;
+  border: 2px solid #9c92b9;
 }
 
 .alex-speaking-corner {
@@ -931,7 +933,7 @@
 
 .tavus-placeholder-corner p {
   margin: 0;
-  color: #8b5cf6;
+  color: #9c92b9;
   font-weight: 600;
   font-size: 0.875rem;
 }

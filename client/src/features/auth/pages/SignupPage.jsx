@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from 'react-router-dom';
-import '../../../styles/SignupPage.css';
-import logoIcon from '../../../assets/icon.png';
+import { useNavigate } from "react-router-dom";
+import "../../../styles/SignupPage.css";
+import logoIcon from "../../../assets/icon.png";
 
 const SignupPage = () => {
   const {
@@ -44,15 +44,15 @@ const SignupPage = () => {
   }, [isAuthenticated, isLoading, user, navigate, getAccessTokenSilently]);
 
   const handleSignUp = () => {
-    loginWithRedirect({ 
+    loginWithRedirect({
       screen_hint: "signup",
-      prompt: "login" 
+      prompt: "login",
     });
   };
 
   const handleSignIn = () => {
-    loginWithRedirect({ 
-      prompt: "login"
+    loginWithRedirect({
+      prompt: "login",
     });
   };
 
@@ -79,35 +79,45 @@ const SignupPage = () => {
           <h2 className="auth-title">Sign up to AutiSpark</h2>
 
           <div className="auth-form">
-                      {/* Email Input */}
-          <div className="input-group">
-            <div className="input-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="M3 7l9 6 9-6" />
-              </svg>
+            {/* Email Input */}
+            <div className="input-group">
+              <div className="input-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#6B7280"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="M3 7l9 6 9-6" />
+                </svg>
+              </div>
+              <input type="email" placeholder="Email" className="auth-input" />
             </div>
-            <input
-              type="email"
-              placeholder="Email"
-              className="auth-input"
-            />
-          </div>
 
-          {/* Password Input */}
-          <div className="input-group">
-            <div className="input-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-                <path d="M7 11V7a5 5 0 0110 0v4" />
-              </svg>
+            {/* Password Input */}
+            <div className="input-group">
+              <div className="input-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#6B7280"
+                  strokeWidth="2"
+                >
+                  <rect x="5" y="11" width="14" height="10" rx="2" />
+                  <path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+              </div>
+              <input
+                type="password"
+                placeholder="Password"
+                className="auth-input"
+              />
             </div>
-            <input
-              type="password"
-              placeholder="Password"
-              className="auth-input"
-            />
-          </div>
 
             <button onClick={handleSignUp} className="signup-button">
               SIGN UP
@@ -121,7 +131,8 @@ const SignupPage = () => {
         <div className="signin-container">
           <h2 className="signin-greeting">Welcome Back!</h2>
           <p className="signin-text">
-            Would you like to continue your journey? Sign in to pick up where you left off.
+            Would you like to continue your journey? Sign in to pick up where
+            you left off.
           </p>
           <button onClick={handleSignIn} className="signin-button">
             SIGN IN
