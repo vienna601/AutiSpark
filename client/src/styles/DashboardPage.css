@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+
+.dashboard-page {
+  background: #A8C4C3;
+  min-height: 100vh;
+  padding: 30px 60px;
+  font-family: 'Comfortaa', cursive;
+  color: #524944;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.page-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.page-heading {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Stats Row */
+.stats-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 50px;
+  justify-content: center;
+}
+
+.stat-card {
+  border-radius: 20px;
+  background: #7FA6A0;
+  color: #524944;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card.large {
+  width: 40%;
+  height: 160px;
+}
+
+.stat-card.small {
+  width: 150px;
+  height: 160px;
+}
+
+.stat-label {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.stat-info {
+  text-align: center;
+  font-size: 15px;
+}
+
+/* Table Section */
+.table-section {
+  background: #F6E9E2;
+  border-radius: 25px;
+  padding: 25px;
+  border: 10px solid rgba(246, 233, 226, 0.85);
+  width: 90%;
+  margin: 0 auto;
+}
+
+.table-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 17px;
+}
+
+.student-table th {
+  text-align: left;
+  padding: 10px 15px;
+  font-weight: 700;
+  color: #524944;
+}
+
+.student-table td {
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
+
+.score-box {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+}

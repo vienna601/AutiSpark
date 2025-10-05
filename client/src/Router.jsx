@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import PlacementPage from "./pages/PlacementPage";
 import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
 import HomePage from "@/pages/HomePage";
@@ -9,6 +8,7 @@ import ReadingPage from "@/features/reading/pages/ReadingPage";
 import CongratsPage from "@/pages/CongratsPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import SignupPage from "@/features/auth/pages/SignupPage";
+import DashboardPage from "@/pages/DashboardPage";
 // later: import DashboardPage, ReadingPage, etc.
 
 export default function AppRouter() {
@@ -23,6 +23,7 @@ export default function AppRouter() {
         <Route path="/speaking" element={<SpeakingPage />} />
         <Route path="/congrats" element={<CongratsPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route
           path="/placement"
           element={
