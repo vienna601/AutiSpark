@@ -15,14 +15,18 @@ export function useAuth() {
   const signup = () =>
     loginWithRedirect({ screen_hint: "signup", prompt: "login" });
 
-  //updated logout that clears Auth0 SSO session
-  const signout = () =>
+  // This fully logs out and redirects to your login page
+  const signout = () => {
     logout({
       logoutParams: {
-        returnTo: window.location.origin,
-        federated: true, //clears Auth0 cookie session
+        returnTo: `${window.location.origin}/`, // redirect to /
+        federated: true, // clears Auth0 SSO cookie (forces manual login)
       },
     });
+
+    // optional client-side navigation safety (ensures React refreshes)
+    window.location.href = "/";
+  };
 
   return {
     user,

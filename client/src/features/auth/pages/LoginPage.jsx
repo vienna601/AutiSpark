@@ -1,31 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/LoginPage.css";
 import logoIcon from "../../../assets/icon.png";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import Button from "@/components/ui/Button";
 
 const LoginPage = () => {
-  const { loginWithRedirect } = useAuth0();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { loginWithRedirect, isAuthenticated, error, isLoading } = useAuth0();
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState("");
+  const [warning, setWarning] = useState("");
+
+  // ✅ Redirect user after successful login
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/placement");
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSignIn = () => {
-    loginWithRedirect({ prompt: "login" });
+  // ✅ Handle Auth0 error (invalid credentials)
+  useEffect(() => {
+    if (error) {
+      setWarning("Invalid email or password. Please try again.");
+    }
+  }, [error]);
+
+  const handleSignIn = async () => {
+    try {
+      await loginWithRedirect({
+        prompt: "login",
+        login_hint: email,
+        appState: { returnTo: "/placement" }, // ✅ redirect target
+      });
+    } catch (err) {
+      console.error("Auth0 login failed:", err);
+      setWarning("Login failed. Please check your credentials.");
+    }
   };
 
-  const handleSignUp = () => {
-    loginWithRedirect({
-      screen_hint: "signup",
-      prompt: "login",
-    });
+  const handleSignUp = async () => {
+    try {
+      await loginWithRedirect({
+        screen_hint: "signup",
+        login_hint: email,
+        appState: { returnTo: "/signup" },
+      });
+    } catch (err) {
+      console.error("Auth0 signup failed:", err);
+      setWarning("Signup failed. Please try again later.");
+    }
   };
 
   if (isLoading) {
@@ -42,13 +66,11 @@ const LoginPage = () => {
     <div className="auth-page">
       {/* Left Side - Sign In */}
       <div className="auth-left">
-        {/* Logo and Title */}
         <div className="auth-header">
           <img src={logoIcon} alt="AutiSpark Logo" className="auth-logo" />
           <h1 className="auth-brand">AutiSpark</h1>
         </div>
 
-        {/* Sign In Section */}
         <div className="auth-form-container">
           <h2 className="auth-title">Sign in to AutiSpark</h2>
 
@@ -105,11 +127,13 @@ const LoginPage = () => {
               />
             </div>
 
-            {/* Sign In Button */}
             <button onClick={handleSignIn} className="sign-in-button">
               SIGN IN
             </button>
           </div>
+
+          {/* ⚠️ Warning Message */}
+          {warning && <p className="warning-text">{warning}</p>}
         </div>
       </div>
 

@@ -13,8 +13,14 @@ export function AuthProvider({ children }) {
     getAccessTokenSilently,
   } = useAuth0();
 
-  const login = () => loginWithRedirect();
-  const signup = () => loginWithRedirect({ screen_hint: "signup" });
+  const login = () =>
+    loginWithRedirect({ appState: { returnTo: "/placement" } });
+  const signup = () =>
+    loginWithRedirect({
+      screen_hint: "signup",
+      appState: { returnTo: "/placement" },
+    });
+
   const signout = () =>
     logout({ logoutParams: { returnTo: window.location.origin } });
 
