@@ -29,7 +29,7 @@
   flex-shrink: 0;
   border-radius: 20px;
   border: 5px solid rgba(246, 233, 226, 0.85);
-  background: #C7D9B2;
+  color: #B5A5C9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7A7A7A;
+  color: #B5A5C9;
   font-family: 'Comfortaa';
   font-size: 16px;
   background-size: cover;
@@ -224,7 +224,7 @@
   flex-shrink: 0;
   border-radius: 20px;
   border: 13px solid rgba(246, 233, 226, 0.85);
-  background: #D4CCE9;
+  background: #B5A5C9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +248,7 @@
   flex-shrink: 0;
   border-radius: 20px;
   border: 10px solid rgba(246, 233, 226, 0.85);
-  background: #D4CCE9;
+  background: #B5A5C9;
   display: flex;
   align-items: center;
   justify-content: center;
