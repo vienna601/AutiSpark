@@ -63,6 +63,29 @@
   margin-bottom: 40px;
 }
 
+/* Editable Input Field */
+.auth-input {
+  width: 100%;
+  padding: 18px 20px 18px 60px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(139, 159, 152, 0.5);
+  color: #524944;
+  font-family: 'Comfortaa', cursive;
+  font-size: 16px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.auth-input::placeholder {
+  color: #6B7280;
+  opacity: 1;
+}
+
+.auth-input:focus {
+  background: rgba(139, 159, 152, 0.7);
+}
+
 /* Form */
 .auth-form {
   display: flex;
@@ -115,7 +138,7 @@
 }
 
 /* Sign Up Button */
-.sign-up-button {
+.signup-button {
   max-width: 250px;
   padding: 15px 40px;
   margin: 20px auto 0;
@@ -131,13 +154,13 @@
   display: block;
 }
 
-.sign-up-button:hover {
+.signup-button:hover {
   background: #EDD9CC;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.sign-up-button:active {
+.signup-button:active {
   transform: translateY(0);
 }
 
@@ -180,7 +203,7 @@
 }
 
 /* Sign In Button */
-.sign-in-button {
+.signin-button {
   padding: 15px 50px;
   border: none;
   border-radius: 30px;
@@ -194,13 +217,13 @@
   margin-top: 20px;
 }
 
-.sign-in-button:hover {
+.signin-button:hover {
   background: #8DA99C;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.sign-in-button:active {
+.signin-button:active {
   transform: translateY(0);
 }
 

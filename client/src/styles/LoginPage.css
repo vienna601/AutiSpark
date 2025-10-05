@@ -63,6 +63,29 @@
   margin-bottom: 40px;
 }
 
+/* Editable Input Field */
+.auth-input {
+  width: 100%;
+  padding: 18px 20px 18px 60px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(139, 159, 152, 0.5);
+  color: #524944;
+  font-family: 'Comfortaa', cursive;
+  font-size: 16px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.auth-input::placeholder {
+  color: #6B7280;
+  opacity: 1;
+}
+
+.auth-input:focus {
+  background: rgba(139, 159, 152, 0.7);
+}
+
 /* Form */
 .auth-form {
   display: flex;

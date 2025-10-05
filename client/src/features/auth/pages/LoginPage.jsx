@@ -83,27 +83,35 @@ const LoginPage = () => {
           <h2 className="auth-title">Sign in to AutiSpark</h2>
 
           <div className="auth-form">
-            {/* Email Input (Display Only) */}
-            <div className="input-group">
-              <div className="input-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
-                  <rect x="3" y="5" width="18" height="14" rx="2" />
-                  <path d="M3 7l9 6 9-6" />
-                </svg>
-              </div>
-              <div className="auth-input-display">Email</div>
+          {/* Email Input */}
+          <div className="input-group">
+            <div className="input-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="M3 7l9 6 9-6" />
+              </svg>
             </div>
+            <input
+              type="email"
+              placeholder="Email"
+              className="auth-input"
+            />
+          </div>
 
-            {/* Password Input (Display Only) */}
-            <div className="input-group">
-              <div className="input-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
-                  <rect x="5" y="11" width="14" height="10" rx="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
-              </div>
-              <div className="auth-input-display">Password</div>
+          {/* Password Input */}
+          <div className="input-group">
+            <div className="input-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+              </svg>
             </div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="auth-input"
+            />
+          </div>          
 
             {/* Forgot Password Link */}
             <button
