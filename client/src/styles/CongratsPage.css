@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+
+/* Page Container */
+.badge-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: #9FB8AD;
+  font-family: 'Comfortaa', cursive;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Logo in top left */
+.badge-logo {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+}
+
+.badge-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Main Content Container */
+.badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 800px;
+  padding: 40px;
+}
+
+/* Congratulations Message */
+.badge-message {
+  color: #524944;
+  text-align: center;
+  font-family: 'Comfortaa', cursive;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Badge Display (not clickable) */
+.badge-display {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+  border-radius: 30px;
+  background: #C5D3E8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.badge-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Continue Button */
+.continue-button {
+  min-width: 180px;
+  padding: 15px 40px;
+  border-radius: 25px;
+  border: none;
+  background: #F6E9E2;
+  color: #524944;
+  text-align: center;
+  font-family: 'Comfortaa', cursive;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.continue-button:hover {
+  background: #EDD9CC;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .badge-message {
+    font-size: 24px;
+    padding: 0 20px;
+  }
+
+  .badge-display {
+    width: 160px;
+    height: 160px;
+  }
+
+  .continue-button {
+    font-size: 18px;
+    padding: 12px 35px;
+  }
+}
