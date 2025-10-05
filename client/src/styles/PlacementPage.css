@@ -1,0 +1,194 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
+
+#root {
+  min-height: 100%;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Reset & fix white gap */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.placementpage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* centers vertically and horizontally */
+  background: #a8c4c3; /* fills whole screen */
+  min-height: 100vh;
+  width: 100vw;
+  font-family: "Comfortaa", sans-serif;
+  box-sizing: border-box;
+  padding: 2rem;
+  margin: 0;
+}
+
+/* Optional: ensure subtitle & content appear properly */
+.placementpage-subtitle {
+  color: #524944;
+  font-size: 24px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* ====== Header Bar ====== */
+.header-bar {
+  width: 100%;
+  padding: 30px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+}
+
+.header-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.header-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ====== Button Container ====== */
+.button-container {
+  display: flex;
+  gap: 70px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* ====== Feature Wrapper (button + label) ====== */
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ====== Feature Buttons ====== */
+.feature-button {
+  width: 230px;
+  height: 230px;
+  border-radius: 30px;
+  border: 18px solid rgba(246, 233, 226, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.feature-button:hover {
+  transform: scale(1.05);
+}
+
+/* ====== Individual Button Colors ====== */
+.speech {
+  background: #c7d9b2;
+}
+
+.writing {
+  background: #c8def5;
+}
+
+.reading {
+  background: #e4d7f5;
+}
+
+/* ====== Icons ====== */
+.icon {
+  width: 140px;
+  height: 140px;
+  opacity: 0.5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.speech-icon {
+  background-image: url("/assets/speaking.png");
+}
+
+.writing-icon {
+  background-image: url("/assets/writing.png");
+}
+
+.reading-icon {
+  background-image: url("/assets/reading.png");
+}
+
+/* ====== Labels ====== */
+.feature-label {
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #524944;
+}

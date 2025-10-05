@@ -47,44 +47,61 @@ export default function PlacementPage() {
       setMessage("Error submitting placement test.");
     }
   };
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/App.css";
+import "../styles/PlacementPage.css";
+
+import logoIcon from "../assets/logo.png";
+import speechIcon from "../assets/speaking.png";
+import writingIcon from "../assets/writing.png";
+import readingIcon from "../assets/reading.png";
+
+const PlacementPage = () => {
+  const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <h1 className="text-2xl font-bold mb-6">Placement Test</h1>
+    <div className="placementpage">
+      {/* Subtitle */}
+      <p className="placementpage-subtitle">Please complete the following assessments for the best effects:</p>
 
-      <label>Reading Score:</label>
-      <input
-        type="number"
-        value={scores.reading}
-        onChange={(e) => setScores({ ...scores, reading: +e.target.value })}
-        className="border p-2 mb-3"
-      />
+      {/* Button Container */}
+      <div className="button-container">
+        {/* Speech */}
+        <div className="feature" onClick={() => navigate("/speaking")}>
+          <div className="feature-button speech">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${speechIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Speech</p>
+        </div>
 
-      <label>Writing Score:</label>
-      <input
-        type="number"
-        value={scores.writing}
-        onChange={(e) => setScores({ ...scores, writing: +e.target.value })}
-        className="border p-2 mb-3"
-      />
+        {/* Writing */}
+        <div className="feature" onClick={() => navigate("/writing")}>
+          <div className="feature-button writing">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${writingIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Writing</p>
+        </div>
 
-      <label>Speaking Score:</label>
-      <input
-        type="number"
-        value={scores.speaking}
-        onChange={(e) => setScores({ ...scores, speaking: +e.target.value })}
-        className="border p-2 mb-3"
-      />
-
-      <Button onClick={handleSubmit}>Submit Placement</Button>
-
-      {message && <p className="mt-4 text-green-600">{message}</p>}
-      <Button
-        onClick={handleLogout}
-        className="mt-6 bg-red-500 text-white hover:bg-red-600"
-      >
-        Log Out
-      </Button>
+        {/* Reading */}
+        <div className="feature" onClick={() => navigate("/reading")}>
+          <div className="feature-button reading">
+            <div
+              className="icon"
+              style={{ backgroundImage: `url(${readingIcon})` }}
+            ></div>
+          </div>
+          <p className="feature-label">Reading</p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PlacementPage;
