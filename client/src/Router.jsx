@@ -8,6 +8,7 @@ import HomePage from "@/pages/HomePage";
 import SpeakingPage from "@/features/speaking/pages/SpeakingPage";
 import WritingPage from "@/features/writing/pages/WritingPage";
 import ReadingPage from "@/features/reading/pages/ReadingPage";
+import CongratsPage from "@/pages/CongratsPage";
 // later: import DashboardPage, ReadingPage, etc.
 
 export default function AppRouter() {
@@ -15,10 +16,11 @@ export default function AppRouter() {
     <Router>
       <Routes>
         {/*<Route path="/" element={<LoginPage />} />*/}
-        <Route path="/" element={<PlacementPage />} />
+        <Route path="/placement" element={<PlacementPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/reading" element={<ReadingPage />} />
         <Route path="/speaking" element={<SpeakingPage />} />
+        <Route path="/" element={<CongratsPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/placement"
