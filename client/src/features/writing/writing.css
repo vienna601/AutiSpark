@@ -1,9 +1,10 @@
 /* WritingPage.css */
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
 
 /* Page Container */
 .writing-page {
   min-height: 100vh;
-  background: #9fb8ad;
+  background: #a8c4c3;
   padding: 20px;
   font-family: "Comfortaa", cursive;
 }
@@ -38,7 +39,7 @@
 /* Page Heading */
 .page-heading {
   display: flex;
-  width: 174px;
+  width: 70px;
   height: 14px;
   flex-direction: column;
   justify-content: center;
@@ -63,7 +64,7 @@
   color: #524944;
   text-align: center;
   font-family: "Comfortaa";
-  font-size: 15px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -116,7 +117,7 @@
 }
 
 .comment-text {
-  color: #a8b5c8;
+  color: #89a8c4;
   font-family: "Comfortaa";
   font-size: 16px;
   font-style: normal;
@@ -164,7 +165,7 @@
   flex-shrink: 0;
   border-radius: 20px;
   border: 13px solid rgba(246, 233, 226, 0.85);
-  background: #b8c9d9;
+  background: #c9dcf1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,7 +189,7 @@
   flex-shrink: 0;
   border-radius: 20px;
   border: 13px solid rgba(246, 233, 226, 0.85);
-  background: #b8c9d9;
+  background: #c9dcf1;
   display: flex;
   align-items: center;
   justify-content: center;

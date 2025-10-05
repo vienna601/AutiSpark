@@ -1,9 +1,10 @@
 /* SpeechTherapyPage.css */
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
 
 /* Page Container */
 .speech-page {
-  max-height: 100%;
-  background: #9fb8ad;
+  max-height: 100vh;
+  background: #a8c4c3;
   padding: 16px;
   font-family: "Comfortaa", cursive;
 }
