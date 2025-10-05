@@ -268,7 +268,6 @@ export default function ReadingPage() {
               </div>
 
               <div className="story-content">
-                <div className="photo-placeholder">(story illustration)</div>
                 <div className="story-text">{currentStory.story}</div>
               </div>
 

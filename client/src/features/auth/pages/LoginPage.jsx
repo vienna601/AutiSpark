@@ -89,7 +89,7 @@ const LoginPage = () => {
                   <rect x="3" y="5" width="18" height="14" rx="2" />
                   <path d="M3 7l9 6 9-6" />
                 </svg>
-                <div className="auth-input-display">Email</div>
+                <div className="auth-input-display"></div>
               </div>
               <input type="email" placeholder="Email" className="auth-input" />
             </div>
@@ -118,7 +118,7 @@ const LoginPage = () => {
                   <rect x="5" y="11" width="14" height="10" rx="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-                <div className="auth-input-display">Password</div>
+                <div className="auth-input-display"></div>
               </div>
               <input
                 type="password"
