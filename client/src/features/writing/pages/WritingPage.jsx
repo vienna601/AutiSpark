@@ -1,42 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Edit3, Save, RotateCcw, Mic, MicOff, Home, Eye, MessageSquare } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import WritingPrompt from '../components/WritingPrompt';
-import FeedbackPanel from '../components/FeedbackPanel';
-import WritingHints from '../components/WritingHints';
+import { useNavigate } from 'react-router-dom';
 import { WritingFeedbackService } from '../services/writingFeedbackService';
 import "../writing.css";
+import logoIcon from '../../../assets/logo.png';
 
 export default function WritingPage() {
-  const [currentPrompt, setCurrentPrompt] = useState({
+  const navigate = useNavigate();
+  const [currentPrompt] = useState({
     prompt: "Write about your favorite animal. What does it look like? What does it like to do?",
     goal: "write a structured response",
     expectedLength: "3-5 sentences",
+    level: "Beginner",
     tips: ["Start with a sentence about your name", "Use describing words like colors and sizes"]
   });
   
   const [studentResponse, setStudentResponse] = useState("");
-  const [feedback, setFeedback] = useState(null);
-  const [realTimeFeedback, setRealTimeFeedback] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [isListening, setIsListening] = useState(false);
 
   const recognitionRef = useRef(null);
-  const feedbackService = useRef(new WritingFeedbackService());
-  const feedbackTimeoutRef = useRef(null);
-
-  // Add this test function
-  const testGeminiConnection = async () => {
-    console.log('🧪 Testing Gemini API connection...');
-    const result = await feedbackService.current.testConnection();
-    if (result) {
-      alert('✅ Gemini API connection successful!');
-    } else {
-      alert('❌ Gemini API connection failed. Check console for details.');
-    }
-  };
 
   // Initialize speech recognition
   useEffect(() => {
@@ -78,36 +60,11 @@ export default function WritingPage() {
     };
   }, []);
 
-  // Update word count and get real-time feedback
+  // Update word count
   useEffect(() => {
     const words = studentResponse.trim().split(/\s+/).filter(word => word.length > 0);
     setWordCount(words.length);
-
-    // Debounce real-time feedback
-    if (feedbackTimeoutRef.current) {
-      clearTimeout(feedbackTimeoutRef.current);
-    }
-
-    if (studentResponse.length > 20) {
-      feedbackTimeoutRef.current = setTimeout(async () => {
-        try {
-          const realTime = await feedbackService.current.getRealTimeFeedback(
-            studentResponse,
-            currentPrompt.prompt
-          );
-          setRealTimeFeedback(realTime);
-        } catch (error) {
-          console.error('Error getting real-time feedback:', error);
-        }
-      }, 2000); // Wait 2 seconds after user stops typing
-    }
-
-    return () => {
-      if (feedbackTimeoutRef.current) {
-        clearTimeout(feedbackTimeoutRef.current);
-      }
-    };
-  }, [studentResponse, currentPrompt.prompt]);
+  }, [studentResponse]);
 
   const handleTextChange = (e) => {
     setStudentResponse(e.target.value);
@@ -128,48 +85,8 @@ export default function WritingPage() {
     }
   };
 
-  const generateNewPrompt = async () => {
-    setIsGeneratingPrompt(true);
-    try {
-      const newPrompt = await feedbackService.current.generatePrompt('beginner', 'personal');
-      setCurrentPrompt(newPrompt);
-      // Reset everything when getting new prompt
-      setStudentResponse('');
-      setFeedback(null);
-      setRealTimeFeedback(null);
-    } catch (error) {
-      console.error('Error generating prompt:', error);
-    } finally {
-      setIsGeneratingPrompt(false);
-    }
-  };
-
-  const analyzeFeedback = async () => {
-    if (!studentResponse.trim()) {
-      alert('Please write something first!');
-      return;
-    }
-
-    setIsAnalyzing(true);
-    try {
-      const result = await feedbackService.current.analyzeWriting(
-        currentPrompt.prompt,
-        studentResponse,
-        currentPrompt.goal
-      );
-      setFeedback(result);
-      setRealTimeFeedback(null); // Clear real-time feedback when we get full feedback
-    } catch (error) {
-      console.error('Error getting feedback:', error);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
   const resetWriting = () => {
     setStudentResponse('');
-    setFeedback(null);
-    setRealTimeFeedback(null);
     setWordCount(0);
     if (isListening) {
       recognitionRef.current.stop();
@@ -181,12 +98,10 @@ export default function WritingPage() {
     const writingData = {
       prompt: currentPrompt.prompt,
       text: studentResponse,
-      feedback: feedback,
       timestamp: new Date().toISOString(),
       wordCount
     };
     
-    // Save to localStorage
     const savedWritings = JSON.parse(localStorage.getItem('autispark_writings') || '[]');
     savedWritings.push(writingData);
     localStorage.setItem('autispark_writings', JSON.stringify(savedWritings));
@@ -199,99 +114,125 @@ export default function WritingPage() {
       {/* Header */}
       <div className="header">
         <div className="header-left">
+          <div className="logo-icon">
+            <img src={logoIcon} alt="Logo" className="logo-image" />
+          </div>
           <div className="icon-container">
-            <Edit3 size={32} color="#524944" />
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#524944" strokeWidth="2">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            </svg>
           </div>
           <div className="page-heading">Writing</div>
-          {/* Add test button in development */}
-          {import.meta.env.DEV && (
-            <button
-              onClick={testGeminiConnection}
-              className="ml-4 px-3 py-1 bg-blue-500 text-white rounded text-sm"
-            >
-              Test API
-            </button>
-          )}
         </div>
 
-        <Link to="/" className="home-link">
-          <Home size={20} />
+        <a href="/" className="home-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#524944" strokeWidth="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
           Go back home
-        </Link>
+        </a>
       </div>
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Left Section - Prompt and Writing Area */}
-        <div className="left-section">
-          {/* Writing Prompt */}
-          <WritingPrompt 
-            prompt={currentPrompt}
-            onNewPrompt={generateNewPrompt}
-            isGenerating={isGeneratingPrompt}
-          />
+        {/* Left Section - Writing Area */}
+        <div className="writing-section">
+          {/* Prompt Card */}
+          <div className="prompt-card">
+            <h2 className="prompt-heading">Today's Writing Prompt</h2>
+            
+            <p className="prompt-text">{currentPrompt.prompt}</p>
+            
+            <div className="prompt-details">
+              <div className="detail-item">
+                <span className="detail-label">Goal:</span>
+                <span className="detail-value">{currentPrompt.goal}</span>
+              </div>
+              
+              <div className="detail-item">
+                <span className="detail-label">Expected Length:</span>
+                <span className="detail-value">{currentPrompt.expectedLength}</span>
+              </div>
+              
+              <div className="detail-item">
+                <span className="detail-label">Level:</span>
+                <span className="detail-value">{currentPrompt.level}</span>
+              </div>
+            </div>
 
-          {/* Writing Area */}
-          <div className="prompt-section">
-            <div className="prompt-title-container">
-              <div className="prompt-title">Your Writing</div>
-              <div className="controls">
+            <div className="helpful-tips">
+              <h4>Helpful Tips:</h4>
+              <ul>
+                {currentPrompt.tips.map((tip, index) => (
+                  <li key={index}>{tip}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Writing Input Card */}
+          <div className="writing-input-card">
+            <div className="writing-header">
+              <h3>Your Writing</h3>
+              <div className="writing-controls">
                 <button
                   onClick={toggleSpeechRecognition}
-                  className={`control-button ${isListening ? 'listening' : ''}`}
+                  className={`control-btn ${isListening ? 'listening' : ''}`}
                 >
-                  {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
                   {isListening ? 'Stop Dictation' : 'Start Dictation'}
-                </button>
-                
-                <button
-                  onClick={analyzeFeedback}
-                  disabled={!studentResponse.trim() || isAnalyzing}
-                  className="analyze-button"
-                >
-                  {isAnalyzing ? 'Analyzing...' : 'Get Feedback'}
                 </button>
               </div>
             </div>
 
-            {/* Comment hint */}
-            <div className="comment-section">
-              <MessageSquare className="comment-icon" size={20} />
-              <span className="comment-text">
-                comment: {currentPrompt.tips?.[0] || "take your time and express your thoughts clearly."}
-              </span>
+            <div className="comment-hint">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#89a8c4" strokeWidth="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span>comment: {currentPrompt.tips[0]}</span>
             </div>
 
-            {/* Text Area */}
             <textarea
-              className="response-input"
+              className="writing-textarea"
               placeholder="Start writing here... You can type or use the microphone to speak your ideas!"
               value={studentResponse}
               onChange={handleTextChange}
-              rows={12}
+              rows={10}
             />
 
-            {/* Writing Stats and Controls */}
-            <div className="stats-controls">
-              <div className="stats">
+            <div className="writing-footer">
+              <div className="word-count">
                 {wordCount} words • {studentResponse.length} characters
               </div>
               
-              <div className="action-controls">
+              <div className="action-buttons">
                 <button
                   onClick={saveWriting}
                   disabled={!studentResponse.trim()}
-                  className="save-button"
+                  className="save-btn"
                 >
-                  <Save size={16} />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                  </svg>
                   Save
                 </button>
                 
                 <button
                   onClick={resetWriting}
-                  className="reset-button"
+                  className="reset-btn"
                 >
-                  <RotateCcw size={16} />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="1 4 1 10 7 10"/>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                  </svg>
                   Reset
                 </button>
               </div>
@@ -299,24 +240,45 @@ export default function WritingPage() {
           </div>
         </div>
 
-        {/* Right Section - Hints and Feedback */}
-        <div className="right-section">
-          {/* AI Writing Hints */}
-          <WritingHints 
-            currentText={studentResponse}
-            prompt={currentPrompt.prompt}
-            goal={currentPrompt.goal}
-            feedbackService={feedbackService.current}
-          />
+        {/* Right Section - Help */}
+        <div className="help-section">
+          {/* Ask for Help Panel */}
+          <div className="help-panel">
+            <div className="help-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3>Ask for Help</h3>
+            </div>
+            
+            <div className="help-input-area">
+              <textarea
+                className="help-input"
+                placeholder="Ask me anything about writing! Like 'How do I start?' or 'I'm stuck, what should I write?'"
+                rows={3}
+              />
+              <button className="send-button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              </button>
+            </div>
 
-          {/* Feedback Panel */}
-          <div className="feedback-container">
-            <FeedbackPanel 
-              feedback={feedback}
-              isAnalyzing={isAnalyzing}
-              realTimeFeedback={realTimeFeedback}
-            />
+            <div className="quick-questions-box">
+              <h4>Quick Questions:</h4>
+              <div className="quick-questions-list">
+                <button className="quick-question">How do I start writing?</button>
+                <button className="quick-question">I'm stuck, what should I do?</button>
+                <button className="quick-question">How do I get ideas?</button>
+                <button className="quick-question">What should I write about?</button>
+                <button className="quick-question">How long should my writing be?</button>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
