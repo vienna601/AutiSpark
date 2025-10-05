@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
 
 /* Page Container */
 .reading-page {
@@ -886,8 +886,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .active-call-corner {
@@ -1030,7 +1034,7 @@
   .main-content {
     grid-template-columns: 1fr;
   }
-  
+
   .answer-buttons {
     grid-template-columns: 1fr;
   }
@@ -1046,15 +1050,15 @@
     gap: 1rem;
     text-align: center;
   }
-  
+
   .difficulty-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .story-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
@@ -1070,11 +1074,11 @@
   .difficulty-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .page-heading {
     font-size: 1.5rem;
   }
-  
+
   .story-title-reading {
     font-size: 1.5rem;
   }

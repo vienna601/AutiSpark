@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Book, Brain, MessageCircle, ChevronRight, Star, Trophy, Target, Lightbulb } from 'lucide-react';
-import { READING_STORIES, DIFFICULTY_LEVELS } from '../data/readingStories';
-import { ReadingComprehensionService } from '../services/readingComprehensionService';
-import TavusReadingAssistant from '../components/TavusReadingAssistant';
-import { testAPIConnections } from '../utils/testConfig';
-import '../ReadingPage.css';
+import React, { useState, useEffect } from "react";
+import {
+  Book,
+  Brain,
+  MessageCircle,
+  ChevronRight,
+  Star,
+  Trophy,
+  Target,
+  Lightbulb,
+} from "lucide-react";
+import { READING_STORIES, DIFFICULTY_LEVELS } from "../data/readingStories";
+import { ReadingComprehensionService } from "../services/readingComprehensionService";
+import TavusReadingAssistant from "../components/TavusReadingAssistant";
+import { testAPIConnections } from "../utils/testConfig";
+import "../ReadingPage.css";
 
 export default function ReadingPage() {
   // State management
@@ -16,7 +25,7 @@ export default function ReadingPage() {
   const [score, setScore] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  
+
   // AI Assistant states
   const [geminiHint, setGeminiHint] = useState(null);
   const [showHint, setShowHint] = useState(false);
@@ -53,17 +62,20 @@ export default function ReadingPage() {
     if (selectedAnswer === null) return;
 
     const isCorrect = selectedAnswer === currentQuestion.correct;
-    
+
     if (isCorrect) {
       setScore(score + 1);
     }
 
-    setCompletedQuestions([...completedQuestions, {
-      questionId: currentQuestion.id,
-      selected: selectedAnswer,
-      correct: currentQuestion.correct,
-      isCorrect
-    }]);
+    setCompletedQuestions([
+      ...completedQuestions,
+      {
+        questionId: currentQuestion.id,
+        selected: selectedAnswer,
+        correct: currentQuestion.correct,
+        isCorrect,
+      },
+    ]);
 
     setShowExplanation(true);
 
@@ -76,10 +88,10 @@ export default function ReadingPage() {
         currentQuestion.options[selectedAnswer],
         isCorrect
       );
-      
+
       setGeminiHint(explanation);
     } catch (error) {
-      console.error('Error getting explanation:', error);
+      console.error("Error getting explanation:", error);
     }
   };
 
@@ -106,11 +118,11 @@ export default function ReadingPage() {
         currentQuestion.question,
         selectedAnswer !== null ? currentQuestion.options[selectedAnswer] : null
       );
-      
+
       setGeminiHint(hint);
       setShowHint(true);
     } catch (error) {
-      console.error('Error getting hint:', error);
+      console.error("Error getting hint:", error);
     }
   };
 
@@ -124,7 +136,7 @@ export default function ReadingPage() {
   useEffect(() => {
     if (import.meta.env.DEV) {
       const apiStatus = testAPIConnections();
-      console.log('🔧 API Status:', apiStatus);
+      console.log("🔧 API Status:", apiStatus);
     }
   }, []);
 
@@ -139,9 +151,16 @@ export default function ReadingPage() {
           <div className="page-heading">Reading Comprehension</div>
         </div>
         <a href="/" className="home-link">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6b7280"
+            strokeWidth="2"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
           Go back home
         </a>
@@ -159,14 +178,22 @@ export default function ReadingPage() {
               {DIFFICULTY_LEVELS.map((level) => (
                 <div
                   key={level.id}
-                  className={`difficulty-card ${selectedDifficulty === level.id ? 'selected' : ''}`}
+                  className={`difficulty-card ${
+                    selectedDifficulty === level.id ? "selected" : ""
+                  }`}
                   onClick={() => setSelectedDifficulty(level.id)}
                 >
                   <div className="difficulty-number">{level.id}</div>
-                  <h3 style={{ fontWeight: 'bold', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                  <h3
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "1.125rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
                     {level.name}
                   </h3>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
                     {level.description}
                   </p>
                 </div>
@@ -176,7 +203,9 @@ export default function ReadingPage() {
 
           {/* Story Selection */}
           <div className="story-selection">
-            <h2 className="difficulty-title">Choose a Story - Level {selectedDifficulty}</h2>
+            <h2 className="difficulty-title">
+              Choose a Story - Level {selectedDifficulty}
+            </h2>
             <div className="story-grid">
               {stories.map((story) => (
                 <div
@@ -207,8 +236,10 @@ export default function ReadingPage() {
         <div className="results-screen">
           <Trophy size={64} className="results-icon" />
           <h2 className="results-title">Great Job!</h2>
-          <p className="results-subtitle">You completed "{currentStory.title}"</p>
-          
+          <p className="results-subtitle">
+            You completed "{currentStory.title}"
+          </p>
+
           <div className="results-score">
             <div className="score-display">
               {score} / {currentStory.questions.length}
@@ -231,7 +262,8 @@ export default function ReadingPage() {
               <div className="story-header-reading">
                 <h2 className="story-title-reading">{currentStory.title}</h2>
                 <div className="question-progress">
-                  Question {currentQuestionIndex + 1} of {currentStory.questions.length}
+                  Question {currentQuestionIndex + 1} of{" "}
+                  {currentStory.questions.length}
                 </div>
               </div>
 
@@ -242,7 +274,7 @@ export default function ReadingPage() {
 
               <div className="question-section">
                 <div className="question-label">{currentQuestion.question}</div>
-                
+
                 <div className="answer-buttons">
                   {currentQuestion.options.map((option, index) => (
                     <button
@@ -253,12 +285,12 @@ export default function ReadingPage() {
                         selectedAnswer === index
                           ? showExplanation
                             ? index === currentQuestion.correct
-                              ? 'correct'
-                              : 'incorrect'
-                            : 'selected'
+                              ? "correct"
+                              : "incorrect"
+                            : "selected"
                           : showExplanation && index === currentQuestion.correct
-                          ? 'correct'
-                          : ''
+                          ? "correct"
+                          : ""
                       }`}
                     >
                       <div className="button-image"></div>
@@ -286,8 +318,13 @@ export default function ReadingPage() {
                       Submit Answer
                     </button>
                   ) : (
-                    <button onClick={handleNextQuestion} className="next-button">
-                      {currentQuestionIndex < currentStory.questions.length - 1 ? 'Next Question' : 'See Results'}
+                    <button
+                      onClick={handleNextQuestion}
+                      className="next-button"
+                    >
+                      {currentQuestionIndex < currentStory.questions.length - 1
+                        ? "Next Question"
+                        : "See Results"}
                     </button>
                   )}
                 </div>
@@ -312,12 +349,16 @@ export default function ReadingPage() {
                         <p className="hint-tip">{geminiHint.readingTip}</p>
                       </div>
                     )}
-                    
+
                     {showExplanation && (
                       <div className="explanation-display">
                         <h4 className="explanation-title">Explanation</h4>
-                        <p className="explanation-content">{geminiHint.explanation}</p>
-                        <p className="explanation-encouragement">{geminiHint.encouragement}</p>
+                        <p className="explanation-content">
+                          {geminiHint.explanation}
+                        </p>
+                        <p className="explanation-encouragement">
+                          {geminiHint.encouragement}
+                        </p>
                       </div>
                     )}
                   </>
@@ -327,15 +368,20 @@ export default function ReadingPage() {
                 <div className="progress-section">
                   <h4 className="progress-title">Progress</h4>
                   <div className="progress-bar">
-                    <div 
+                    <div
                       className="progress-fill"
-                      style={{ 
-                        width: `${((currentQuestionIndex + 1) / currentStory.questions.length) * 100}%` 
+                      style={{
+                        width: `${
+                          ((currentQuestionIndex + 1) /
+                            currentStory.questions.length) *
+                          100
+                        }%`,
                       }}
                     />
                   </div>
                   <p className="progress-text">
-                    Question {currentQuestionIndex + 1} of {currentStory.questions.length}
+                    Question {currentQuestionIndex + 1} of{" "}
+                    {currentStory.questions.length}
                   </p>
                 </div>
 
@@ -352,7 +398,9 @@ export default function ReadingPage() {
 
                 {/* Reading Tips */}
                 <div className="tips-section">
-                  <p className="tips-title">💡 <strong>Tips:</strong></p>
+                  <p className="tips-title">
+                    💡 <strong>Tips:</strong>
+                  </p>
                   <ul className="tips-list">
                     <li>Read the story carefully</li>
                     <li>Look for key words in the question</li>
@@ -366,7 +414,7 @@ export default function ReadingPage() {
 
           {/* Right Section - Tavus Video Assistant */}
           <div className="tavus-section">
-            <TavusReadingAssistant 
+            <TavusReadingAssistant
               selectedStory={selectedStory}
               currentQuestion={currentQuestion}
               currentQuestionIndex={currentQuestionIndex}
