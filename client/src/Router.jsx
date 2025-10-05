@@ -5,12 +5,18 @@ import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import PlacementPage from "./pages/PlacementPage";
 import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
 import ReadingPage from "@/features/reading/pages/ReadingPage";
+import HomePage from "@/pages/HomePage";
+import SpeakingPage from "@/features/speaking/pages/SpeakingPage";
+import WritingPage from "@/features/writing/pages/WritingPage";
+// later: import DashboardPage, ReadingPage, etc.
 
 export default function AppRouter() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/HomePage" element={<HomePage />} />
+        <Route path="/writing" element={<WritingPage />} />
+        <Route path="/" element={<SpeakingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/placement"

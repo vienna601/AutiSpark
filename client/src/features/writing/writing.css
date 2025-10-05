@@ -1,0 +1,206 @@
+/* WritingPage.css */
+
+/* Page Container */
+.writing-page {
+  min-height: 100vh;
+  background: #9fb8ad;
+  padding: 20px;
+  font-family: "Comfortaa", cursive;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Icon Container */
+.icon-container {
+  width: 61px;
+  height: 62px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  border: 5px solid rgba(246, 233, 226, 0.85);
+  background: #c7d9b2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Page Heading */
+.page-heading {
+  display: flex;
+  width: 174px;
+  height: 14px;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #524944;
+  text-align: center;
+  font-family: "Comfortaa";
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+/* Go Back Home Link */
+.home-link {
+  display: flex;
+  width: 228px;
+  height: 14px;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #524944;
+  text-align: center;
+  font-family: "Comfortaa";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration: none;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+/* Prompt Section */
+.prompt-section {
+  width: 525px;
+  min-height: 500px;
+  flex-shrink: 0;
+  background: #f6e9e2;
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Prompt Title */
+.prompt-title {
+  color: #524944;
+  text-align: center;
+  font-family: "Comfortaa";
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 30px;
+}
+
+/* Comment Section */
+.comment-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.comment-icon {
+  flex-shrink: 0;
+}
+
+.comment-text {
+  color: #a8b5c8;
+  font-family: "Comfortaa";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* Student Response Input */
+.response-input {
+  width: 100%;
+  flex: 1;
+  min-height: 300px;
+  background: #d3d3d3;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-family: "Comfortaa";
+  font-size: 16px;
+  color: #524944;
+  resize: vertical;
+}
+
+.response-input::placeholder {
+  color: #7a7a7a;
+  font-family: "Comfortaa";
+  font-size: 16px;
+}
+
+.response-input:focus {
+  outline: none;
+  background: #c8c8c8;
+}
+
+/* Right Section */
+.right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Video Block */
+.video-block {
+  width: 237px;
+  height: 237px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  border: 13px solid rgba(246, 233, 226, 0.85);
+  background: #b8c9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.video-text {
+  color: #524944;
+  text-align: center;
+  font-family: "Comfortaa";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* Goal Block */
+.goal-block {
+  width: 237px;
+  height: 140px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  border: 13px solid rgba(246, 233, 226, 0.85);
+  background: #b8c9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.goal-text {
+  color: #524944;
+  text-align: center;
+  font-family: "Comfortaa";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+}
