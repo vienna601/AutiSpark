@@ -1,9 +1,20 @@
-// SpeechTherapyPage.jsx
-import React from "react";
+import React, { useState } from "react";
 import { Home, MessageCircle } from "lucide-react";
+import TavusVideo from "../../reading-trainer/src/components/TavusVideo";
 import "../speaking.css";
 
 export default function SpeakingPage() {
+  const [feedback, setFeedback] = useState("");
+  const [conversationId, setConversationId] = useState(null);
+  const [transcriptData, setTranscriptData] = useState([]);
+
+  const handleFeedbackGenerated = (feedbackData) => {
+    setFeedback(feedbackData);
+  };
+
+  const handleTranscriptUpdate = (transcriptEntry) => {
+    setTranscriptData((prev) => [...prev, transcriptEntry]);
+  };
   return (
     <div className="speech-page">
       {/* Header */}
@@ -28,13 +39,28 @@ export default function SpeakingPage() {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Left Rectangle */}
         <div className="left-rectangle">
-          {/* Question Text */}
           <div className="question-text">What is your name?</div>
-
-          {/* Gray Response Area */}
-          <div className="response-area"></div>
+          <div className="response-area">
+            <TavusVideo
+              readingProgress={{
+                currentPage: 0,
+                totalPages: 1,
+                shouldGenerateFeedback: true,
+                correctAnswers: 0,
+                incorrectAnswers: 0,
+              }}
+              onFeedbackGenerated={handleFeedbackGenerated}
+              onTranscriptUpdate={handleTranscriptUpdate}
+              onConversationStart={setConversationId}
+              currentGoal="speaking practice"
+              storyContext={{
+                title: "Conversation Practice",
+                difficulty: "beginner",
+                content: [{ text: "Let's practice introducing ourselves." }],
+              }}
+            />
+          </div>
         </div>
 
         {/* Right Side - Three Blocks */}

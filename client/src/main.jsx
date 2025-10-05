@@ -11,14 +11,19 @@ const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 // ... rendering App
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Auth0Provider
-    domain={domain}
-    clientId={clientId}
-    authorizationParams={{
-      redirect_uri: window.location.origin,
-      audience: audience,
-    }}
-  >
-    <AppRouter />
-  </Auth0Provider>
+  <React.StrictMode>
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: { audience },
+        scope: "openid profile email",
+      }}
+      useRefreshTokens={true}
+      cacheLocation="localstorage"
+    >
+      <App />
+    </Auth0Provider>
+  </React.StrictMode>
 );
