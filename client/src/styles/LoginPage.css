@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap");
 
 /* Reset */
 * {
@@ -12,13 +12,13 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
 }
 
 /* Left Side - Sign In Section */
 .auth-left {
   flex: 1;
-  background: #9FB8AD;
+  background: #9fb8ad;
   padding: 60px 80px;
   display: flex;
   flex-direction: column;
@@ -41,8 +41,8 @@
 }
 
 .auth-brand {
-  color: #F6E9E2;
-  font-family: 'Comfortaa', cursive;
+  color: #f6e9e2;
+  font-family: "Comfortaa", cursive;
   font-size: 28px;
   font-weight: 400;
   line-height: normal;
@@ -56,7 +56,7 @@
 
 .auth-title {
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 32px;
   font-weight: 400;
   line-height: normal;
@@ -71,14 +71,14 @@
   border-radius: 10px;
   background: rgba(139, 159, 152, 0.5);
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 16px;
   outline: none;
   transition: background 0.3s ease;
 }
 
 .auth-input::placeholder {
-  color: #6B7280;
+  color: #6b7280;
   opacity: 1;
 }
 
@@ -120,7 +120,7 @@
 
 .loading-text {
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 18px;
 }
 
@@ -130,8 +130,8 @@
   padding: 18px 20px 18px 60px;
   border-radius: 10px;
   background: rgba(139, 159, 152, 0.5);
-  color: #6B7280;
-  font-family: 'Comfortaa', cursive;
+  color: #6b7280;
+  font-family: "Comfortaa", cursive;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -142,7 +142,7 @@
   background: none;
   border: none;
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 14px;
   text-align: center;
   cursor: pointer;
@@ -162,9 +162,9 @@
   margin: 20px auto 0;
   border: none;
   border-radius: 30px;
-  background: #F6E9E2;
+  background: #f6e9e2;
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
@@ -173,7 +173,7 @@
 }
 
 .sign-in-button:hover {
-  background: #EDD9CC;
+  background: #edd9cc;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -185,7 +185,7 @@
 /* Right Side - Sign Up Section */
 .auth-right {
   flex: 1;
-  background: #F6E9E2;
+  background: #f6e9e2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,8 +202,8 @@
 }
 
 .signup-greeting {
-  color: #9FB8AD;
-  font-family: 'Comfortaa', cursive;
+  color: #9fb8ad;
+  font-family: "Comfortaa", cursive;
   font-size: 42px;
   font-weight: 400;
   line-height: normal;
@@ -212,7 +212,7 @@
 
 .signup-text {
   color: #524944;
-  font-family: 'Comfortaa', cursive;
+  font-family: "Comfortaa", cursive;
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
@@ -224,9 +224,9 @@
   padding: 15px 50px;
   border: none;
   border-radius: 30px;
-  background: #9FB8AD;
-  color: #F6E9E2;
-  font-family: 'Comfortaa', cursive;
+  background: #9fb8ad;
+  color: #f6e9e2;
+  font-family: "Comfortaa", cursive;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
@@ -235,7 +235,7 @@
 }
 
 .sign-up-button:hover {
-  background: #8DA99C;
+  background: #8da99c;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
