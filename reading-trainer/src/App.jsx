@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import ReadingInterface from './components/ReadingInterface'
+import ParagraphReader from './components/ParagraphReader'
+import WritingInterface from './components/WritingInterface'
 import TavusVideo from './components/TavusVideo'
 import GoalDisplay from './components/GoalDisplay'
 import TranscriptAnalyzer from './components/TranscriptAnalyzer'
@@ -11,13 +13,13 @@ function App() {
   const [feedback, setFeedback] = useState('')
   const [conversationId, setConversationId] = useState(null)
   const [transcriptData, setTranscriptData] = useState([])
+  const [activeComponent, setActiveComponent] = useState('writing')
 
   const handleProgressUpdate = (progressData) => {
     console.log('📊 Reading progress update:', progressData)
   }
 
   const handleFeedbackGenerated = (feedbackData) => {
-    console.log('💬 Feedback generated:', feedbackData)
     setFeedback(feedbackData)
   }
 
@@ -35,8 +37,39 @@ function App() {
     ]
   }
 
+  const navItems = [
+    { id: 'paragraph', label: 'Paragraph Reading', component: ParagraphReader },
+    { id: 'reading', label: 'Word Reading', component: ReadingInterface },
+    { id: 'video', label: 'AI Tutor', component: TavusVideo },
+    { id: 'analysis', label: 'Analysis', component: TranscriptAnalyzer },
+    { id: 'goals', label: 'Goals', component: GoalDisplay },
+    { id: 'debug', label: 'Debug', component: DebugPanel }
+  ]
+
+  const ActiveComponent = navItems.find(item => item.id === activeComponent)?.component || ParagraphReader
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-2">
+      <nav className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex space-x-8">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveComponent(item.id)}
+                className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                  activeComponent === item.id
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
       <div className="max-w-full mx-auto">
         <header className="text-center mb-3">
           <h1 className="text-xl font-bold text-gray-800 mb-1">AutiSpark Reading Trainer</h1>
