@@ -1,30 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Edit3,
-  Save,
-  RotateCcw,
-  Mic,
-  MicOff,
-  Home,
-  Eye,
-  MessageSquare,
-} from "lucide-react";
+import { Edit3, Save, RotateCcw, Mic, MicOff, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 import WritingPrompt from "../components/WritingPrompt";
-import FeedbackPanel from "../components/FeedbackPanel";
 import WritingHints from "../components/WritingHints";
+import FeedbackPanel from "../components/FeedbackPanel";
 import { WritingFeedbackService } from "../services/writingFeedbackService";
 import "../writing.css";
 
 export default function WritingPage() {
+  // --- Core States ---
   const [currentPrompt, setCurrentPrompt] = useState({
     prompt:
       "Write about your favorite animal. What does it look like? What does it like to do?",
     goal: "write a structured response",
-    expectedLength: "3-5 sentences",
+    expectedLength: "3–5 sentences",
+    level: "Beginner",
     tips: [
-      "Start with a sentence about your name",
-      "Use describing words like colors and sizes",
+      "Start with a sentence about your name.",
+      "Use describing words like colors and sizes.",
     ],
   });
 
@@ -40,18 +33,7 @@ export default function WritingPage() {
   const feedbackService = useRef(new WritingFeedbackService());
   const feedbackTimeoutRef = useRef(null);
 
-  // Add this test function
-  const testGeminiConnection = async () => {
-    console.log("🧪 Testing Gemini API connection...");
-    const result = await feedbackService.current.testConnection();
-    if (result) {
-      alert("✅ Gemini API connection successful!");
-    } else {
-      alert("❌ Gemini API connection failed. Check console for details.");
-    }
-  };
-
-  // Initialize speech recognition
+  // --- Initialize speech recognition ---
   useEffect(() => {
     if ("webkitSpeechRecognition" in window) {
       const recognition = new window.webkitSpeechRecognition();
@@ -66,18 +48,14 @@ export default function WritingPage() {
             finalTranscript += event.results[i][0].transcript + " ";
           }
         }
-
         if (finalTranscript) {
           setStudentResponse((prev) => prev + finalTranscript);
         }
       };
 
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = (e) => {
+        console.error("Speech recognition error:", e.error);
         setIsListening(false);
       };
 
@@ -85,25 +63,19 @@ export default function WritingPage() {
     }
 
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, []);
 
-  // Update word count and get real-time feedback
+  // --- Word Count + Real-time feedback ---
   useEffect(() => {
     const words = studentResponse
       .trim()
       .split(/\s+/)
-      .filter((word) => word.length > 0);
+      .filter((w) => w.length > 0);
     setWordCount(words.length);
 
-    // Debounce real-time feedback
-    if (feedbackTimeoutRef.current) {
-      clearTimeout(feedbackTimeoutRef.current);
-    }
-
+    if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
     if (studentResponse.length > 20) {
       feedbackTimeoutRef.current = setTimeout(async () => {
         try {
@@ -115,26 +87,18 @@ export default function WritingPage() {
         } catch (error) {
           console.error("Error getting real-time feedback:", error);
         }
-      }, 2000); // Wait 2 seconds after user stops typing
+      }, 2000);
     }
-
-    return () => {
-      if (feedbackTimeoutRef.current) {
-        clearTimeout(feedbackTimeoutRef.current);
-      }
-    };
   }, [studentResponse, currentPrompt.prompt]);
 
-  const handleTextChange = (e) => {
-    setStudentResponse(e.target.value);
-  };
+  // --- Handlers ---
+  const handleTextChange = (e) => setStudentResponse(e.target.value);
 
   const toggleSpeechRecognition = () => {
     if (!recognitionRef.current) {
       alert("Speech recognition is not supported in your browser");
       return;
     }
-
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
@@ -152,7 +116,6 @@ export default function WritingPage() {
         "personal"
       );
       setCurrentPrompt(newPrompt);
-      // Reset everything when getting new prompt
       setStudentResponse("");
       setFeedback(null);
       setRealTimeFeedback(null);
@@ -168,7 +131,6 @@ export default function WritingPage() {
       alert("Please write something first!");
       return;
     }
-
     setIsAnalyzing(true);
     try {
       const result = await feedbackService.current.analyzeWriting(
@@ -177,7 +139,7 @@ export default function WritingPage() {
         currentPrompt.goal
       );
       setFeedback(result);
-      setRealTimeFeedback(null); // Clear real-time feedback when we get full feedback
+      setRealTimeFeedback(null);
     } catch (error) {
       console.error("Error getting feedback:", error);
     } finally {
@@ -197,42 +159,30 @@ export default function WritingPage() {
   };
 
   const saveWriting = () => {
-    const writingData = {
+    const data = {
       prompt: currentPrompt.prompt,
       text: studentResponse,
-      feedback: feedback,
+      feedback,
       timestamp: new Date().toISOString(),
       wordCount,
     };
-
-    // Save to localStorage
-    const savedWritings = JSON.parse(
+    const saved = JSON.parse(
       localStorage.getItem("autispark_writings") || "[]"
     );
-    savedWritings.push(writingData);
-    localStorage.setItem("autispark_writings", JSON.stringify(savedWritings));
-
+    saved.push(data);
+    localStorage.setItem("autispark_writings", JSON.stringify(saved));
     alert("Writing saved successfully!");
   };
 
   return (
     <div className="writing-page">
-      {/* Header */}
+      {/* ===== Header ===== */}
       <div className="header">
         <div className="header-left">
           <div className="icon-container">
-            <Edit3 size={32} color="#524944" />
+            <Edit3 size={32} stroke="#524944" />
           </div>
           <div className="page-heading">Writing</div>
-          {/* Add test button in development */}
-          {import.meta.env.DEV && (
-            <button
-              onClick={testGeminiConnection}
-              className="ml-4 px-3 py-1 bg-blue-500 text-white rounded text-sm"
-            >
-              Test API
-            </button>
-          )}
         </div>
 
         <Link to="/" className="home-link">
@@ -241,25 +191,23 @@ export default function WritingPage() {
         </Link>
       </div>
 
-      {/* Main Content */}
+      {/* ===== Main Content ===== */}
       <div className="main-content">
-        {/* Left Section - Prompt and Writing Area */}
-        <div className="left-section">
-          {/* Writing Prompt */}
+        {/* Left Section */}
+        <div className="writing-section">
           <WritingPrompt
             prompt={currentPrompt}
             onNewPrompt={generateNewPrompt}
             isGenerating={isGeneratingPrompt}
           />
 
-          {/* Writing Area */}
-          <div className="prompt-section">
-            <div className="prompt-title-container">
-              <div className="prompt-title">Your Writing</div>
-              <div className="controls">
+          <div className="writing-input-card">
+            <div className="writing-header">
+              <h3>Your Writing</h3>
+              <div className="writing-controls">
                 <button
                   onClick={toggleSpeechRecognition}
-                  className={`control-button ${isListening ? "listening" : ""}`}
+                  className={`control-btn ${isListening ? "listening" : ""}`}
                 >
                   {isListening ? <MicOff size={16} /> : <Mic size={16} />}
                   {isListening ? "Stop Dictation" : "Start Dictation"}
@@ -268,75 +216,85 @@ export default function WritingPage() {
                 <button
                   onClick={analyzeFeedback}
                   disabled={!studentResponse.trim() || isAnalyzing}
-                  className="analyze-button"
+                  className="feedback-btn control-btn"
                 >
                   {isAnalyzing ? "Analyzing..." : "Get Feedback"}
                 </button>
               </div>
             </div>
 
-            {/* Comment hint */}
-            <div className="comment-section">
-              <MessageSquare className="comment-icon" size={20} />
-              <span className="comment-text">
-                comment:{" "}
+            <div className="comment-hint">
+              <span>
+                Tip:{" "}
                 {currentPrompt.tips?.[0] ||
-                  "take your time and express your thoughts clearly."}
+                  "Take your time and express your thoughts clearly."}
               </span>
             </div>
 
-            {/* Text Area */}
             <textarea
-              className="response-input"
+              className="writing-textarea"
               placeholder="Start writing here... You can type or use the microphone to speak your ideas!"
               value={studentResponse}
               onChange={handleTextChange}
-              rows={12}
+              rows={10}
             />
 
-            {/* Writing Stats and Controls */}
-            <div className="stats-controls">
-              <div className="stats">
+            <div className="writing-footer">
+              <div className="word-count">
                 {wordCount} words • {studentResponse.length} characters
               </div>
-
-              <div className="action-controls">
+              <div className="action-buttons">
                 <button
                   onClick={saveWriting}
                   disabled={!studentResponse.trim()}
-                  className="save-button"
+                  className="save-btn"
                 >
-                  <Save size={16} />
-                  Save
+                  <Save size={16} /> Save
                 </button>
-
-                <button onClick={resetWriting} className="reset-button">
-                  <RotateCcw size={16} />
-                  Reset
+                <button onClick={resetWriting} className="reset-btn">
+                  <RotateCcw size={16} /> Reset
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Section - Hints and Feedback */}
-        <div className="right-section">
-          {/* AI Writing Hints */}
-          <WritingHints
-            currentText={studentResponse}
-            prompt={currentPrompt.prompt}
-            goal={currentPrompt.goal}
-            feedbackService={feedbackService.current}
-          />
+        {/* Right Section */}
+        <div className="help-section">
+          {/* ✅ Keep only these: Ask for Help + Hints + Feedback */}
+          <div className="help-panel">
+            <div className="help-header">
+              <h3>Ask for Help</h3>
+            </div>
+            <div className="help-input-area">
+              <textarea
+                className="help-input"
+                placeholder="Ask me anything about writing..."
+              />
+              <button className="send-button">Send</button>
+            </div>
 
-          {/* Feedback Panel */}
-          <div className="feedback-container">
-            <FeedbackPanel
-              feedback={feedback}
-              isAnalyzing={isAnalyzing}
-              realTimeFeedback={realTimeFeedback}
-            />
+            <div className="quick-questions-box">
+              <h4>Quick Questions:</h4>
+              <div className="quick-questions-list">
+                {[
+                  "How do I start my paragraph?",
+                  "I'm stuck, what should I do?",
+                  "What should I write next?",
+                ].map((q, i) => (
+                  <button key={i} className="quick-question">
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+
+          <FeedbackPanel
+            feedback={feedback}
+            isAnalyzing={isAnalyzing}
+            realTimeFeedback={realTimeFeedback}
+          />
         </div>
       </div>
     </div>

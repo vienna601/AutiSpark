@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/LoginPage.css";
 import logoIcon from "../../../assets/icon.png";
-import Button from "@/components/ui/Button";
+import Button from "@/components/Button";
 
 const LoginPage = () => {
   const { loginWithRedirect, isAuthenticated, error, isLoading } = useAuth0();

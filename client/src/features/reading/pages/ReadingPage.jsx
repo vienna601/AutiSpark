@@ -292,7 +292,7 @@ export default function ReadingPage() {
                           : ""
                       }`}
                     >
-                      <div className="button-image"></div>
+                      <div className={`button-image-` + option}></div>
                       <span className="button-text">{option}</span>
                     </button>
                   ))}
