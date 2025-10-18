@@ -156,3 +156,173 @@
   font-weight: 400;
   line-height: normal;
 }
+
+/* Speaking Page Styles */
+.speaking-container {
+  min-height: 100vh;
+  background: #a8c4c3;
+  padding: 20px;
+  font-family: 'Comfortaa', cursive;
+}
+
+.speaking-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.speaking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.speaking-icon {
+  width: 61px;
+  height: 62px;
+  border-radius: 20px;
+  border: 5px solid rgba(246, 233, 226, 0.85);
+  background: #c7d9b2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.speaking-title {
+  color: #524944;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Animation for loading states */
+@keyframes spinning {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spinning 1s linear infinite;
+}
+
+/* Button styles */
+.btn-primary {
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-secondary {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #7c3aed;
+}
+
+.btn-secondary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Card styles */
+.speaking-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.encouragement-card {
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Status indicators */
+.status-active {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid #10b981;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #10b981;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .speaking-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .speaking-content {
+    padding: 0 10px;
+  }
+  
+  .btn-primary,
+  .btn-danger,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
