@@ -5,6 +5,7 @@ import WritingPrompt from "../components/WritingPrompt";
 import WritingHints from "../components/WritingHints";
 import FeedbackPanel from "../components/FeedbackPanel";
 import { WritingFeedbackService } from "../services/writingFeedbackService";
+import { useAuth } from "../../auth/hooks/useAuth";
 import "../writing.css";
 
 export default function WritingPage() {
@@ -32,6 +33,9 @@ export default function WritingPage() {
   const recognitionRef = useRef(null);
   const feedbackService = useRef(new WritingFeedbackService());
   const feedbackTimeoutRef = useRef(null);
+
+  // Auth
+  const { getAccessTokenSilently } = useAuth();
 
   // --- Initialize speech recognition ---
   useEffect(() => {
@@ -133,12 +137,15 @@ export default function WritingPage() {
     }
     setIsAnalyzing(true);
     try {
+      const token = await getAccessTokenSilently();
       const result = await feedbackService.current.analyzeWriting(
         currentPrompt.prompt,
         studentResponse,
-        currentPrompt.goal
+        currentPrompt.goal,
+        token
       );
       setFeedback(result);
+      console.log("Feedback received:", feedback);
       setRealTimeFeedback(null);
     } catch (error) {
       console.error("Error getting feedback:", error);
