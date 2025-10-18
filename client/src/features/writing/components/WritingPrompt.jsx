@@ -23,9 +23,6 @@ export default function WritingPrompt({ prompt, onNewPrompt, isGenerating }) {
       </div>
 
       <div className="prompt-main">
-        <div className="prompt-icon">
-          <MessageSquare size={22} color="#524944" />
-        </div>
         <p className="prompt-text">{prompt.prompt}</p>
       </div>
 
