@@ -2,79 +2,170 @@ export class WritingFeedbackService {
   constructor() {
     this.apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     this.apiUrl = import.meta.env.VITE_GEMINI_API_URL;
-    
-    console.log('🔧 WritingFeedbackService initialized');
-    console.log('API Key available:', !!this.apiKey);
-    console.log('API URL:', this.apiUrl);
+
+    console.log("🔧 WritingFeedbackService initialized");
+    console.log("API Key available:", !!this.apiKey);
+    console.log("API URL:", this.apiUrl);
   }
 
-  async analyzeWriting(prompt, studentText, goal) {
+  async analyzeWriting(prompt, studentText, goal, token) {
     try {
-      console.log('🤖 Starting Gemini analysis...');
-      console.log('Input:', { prompt, studentText, goal });
-      
+      console.log("🤖 Starting Gemini analysis...");
+      console.log("Input:", { prompt, studentText, goal });
+
       if (!this.apiKey) {
-        console.error('❌ No API key found!');
-        throw new Error('Gemini API key not configured');
+        console.error("❌ No API key found!");
+        throw new Error("Gemini API key not configured");
       }
 
-      const analysisPrompt = this.createWritingPrompt(prompt, studentText, goal);
-      console.log('📝 Analysis prompt created, length:', analysisPrompt.length);
-      
+      const analysisPrompt = this.createWritingPrompt(
+        prompt,
+        studentText,
+        goal
+      );
+      console.log("📝 Analysis prompt created, length:", analysisPrompt.length);
+
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
-      console.log('🔗 Request URL:', requestUrl.replace(this.apiKey, '[HIDDEN]'));
-      
+      console.log(
+        "🔗 Request URL:",
+        requestUrl.replace(this.apiKey, "[HIDDEN]")
+      );
+
       const requestBody = {
-        contents: [{
-          parts: [{ text: analysisPrompt }]
-        }],
+        contents: [
+          {
+            parts: [{ text: analysisPrompt }],
+          },
+        ],
         generationConfig: {
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 2048,
-        }
-      };
-      
-      console.log('📦 Request body:', JSON.stringify(requestBody, null, 2));
-      
-      const response = await fetch(requestUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+          maxOutputTokens: 10000,
         },
-        body: JSON.stringify(requestBody)
+      };
+
+      console.log("📦 Request body:", JSON.stringify(requestBody, null, 2));
+
+      const response = await fetch(requestUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
       });
 
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+      console.log("📡 Response status:", response.status);
+      console.log(
+        "📡 Response headers:",
+        Object.fromEntries(response.headers.entries())
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ API Error Response:', errorText);
+        console.error("❌ API Error Response:", errorText);
         throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      console.log('✅ Full API Response:', JSON.stringify(data, null, 2));
-      
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        console.error('❌ Unexpected response structure:', data);
-        console.error('❌ Using default feedback due to bad response structure');
+      console.log("✅ Full API Response:", JSON.stringify(data, null, 2));
+
+      if (
+        !data.candidates ||
+        !data.candidates[0] ||
+        !data.candidates[0].content
+      ) {
+        console.error("❌ Unexpected response structure:", data);
+        console.error(
+          "❌ Using default feedback due to bad response structure"
+        );
         return this.getDefaultFeedback();
       }
 
-      const feedbackText = data.candidates[0].content.parts[0].text;
-      console.log('📄 Raw feedback text:', feedbackText);
-      
-      const parsedFeedback = this.parseFeedback(feedbackText);
-      console.log('✅ Final parsed feedback:', parsedFeedback);
-      
-      return parsedFeedback;
+      if (data.candidates?.[0]?.finishReason === "MAX_TOKENS") {
+        console.warn(
+          "⚠️ Gemini cut off early (MAX_TOKENS) — output may be incomplete"
+        );
+      }
+
+      // 🧩 Handle case 1: Standard Gemini structure (candidates → content → parts)
+      if (
+        Array.isArray(data.candidates) &&
+        data.candidates[0]?.content?.parts?.[0]?.text
+      ) {
+        const feedbackText = data.candidates[0].content.parts[0].text.trim();
+        console.log("🧠 Extracted feedback text from Gemini:", feedbackText);
+        const parsedFeedback = this.parseFeedback(feedbackText);
+        // 🔽 Save feedback to backend
+        await fetch("http://localhost:8000/api/feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            type: "writing",
+            question_or_prompt: prompt,
+            goal,
+            student_response: studentText,
+            feedback: parsedFeedback,
+          }),
+        });
+        return parsedFeedback;
+      }
+
+      // 🧩 Handle case 2: Gemini already returned valid JSON directly
+      if (data.overallScore && data.encouragement) {
+        console.log("🧠 Gemini returned JSON directly (no wrapping).");
+        await fetch("http://localhost:8000/api/feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            type: "writing",
+            question_or_prompt: prompt,
+            goal,
+            student_response: studentText,
+            feedback: data,
+          }),
+        });
+        return data;
+      }
+
+      // 🧩 Handle case 3: Gemini returned text field directly (JSON string)
+      if (typeof data.text === "string" && data.text.trim().startsWith("{")) {
+        console.log("🧠 Gemini returned JSON as top-level string.");
+        const parsedFeedback = this.parseFeedback(data.text);
+        // 🔽 Save feedback to backend
+        await fetch("http://localhost:8000/api/feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            type: "writing",
+            question_or_prompt: prompt,
+            goal,
+            student_response: studentText,
+            feedback: parsedFeedback,
+          }),
+        });
+        return parsedFeedback;
+      }
+
+      // 🧩 Handle case 4: Fallback
+      console.warn(
+        "⚠️ Unknown Gemini response structure, using default feedback."
+      );
+      console.warn("Response data:", data);
+      return this.getDefaultFeedback();
     } catch (error) {
-      console.error('❌ COMPLETE ERROR in analyzeWriting:', error);
-      console.error('❌ Error stack:', error.stack);
-      console.warn('⚠️ Falling back to default feedback');
+      console.error("❌ COMPLETE ERROR in analyzeWriting:", error);
+      console.error("❌ Error stack:", error);
+      console.warn("⚠️ RETURNING DEFAULT FEEDBACK - API CALL FAILED");
       return this.getDefaultFeedback();
     }
   }
@@ -128,85 +219,118 @@ CRITICAL: Return ONLY the JSON object. No markdown. No backticks. No explanatory
 
   parseFeedback(feedbackText) {
     try {
-      console.log('🔍 Parsing feedback text:', feedbackText);
-      
+      console.log("🔍 Parsing feedback text:", feedbackText);
+
       // Clean the response thoroughly
       let cleanText = feedbackText.trim();
-      
+
       // Remove markdown code blocks
-      if (cleanText.startsWith('```json')) {
-        cleanText = cleanText.replace(/^```json\s*\n?/, '').replace(/\n?\s*```$/, '');
-      } else if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/^```\s*\n?/, '').replace(/\n?\s*```$/, '');
+      if (cleanText.startsWith("```json")) {
+        cleanText = cleanText
+          .replace(/^```json\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
+      } else if (cleanText.startsWith("```")) {
+        cleanText = cleanText
+          .replace(/^```\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
       }
-      
+
       // Remove any text before the first {
-      const firstBrace = cleanText.indexOf('{');
+      const firstBrace = cleanText.indexOf("{");
       if (firstBrace > 0) {
         cleanText = cleanText.substring(firstBrace);
-        console.log('🧹 Removed text before first brace');
+        console.log("🧹 Removed text before first brace");
       }
-      
+
       // Remove any text after the last }
-      const lastBrace = cleanText.lastIndexOf('}');
+      const lastBrace = cleanText.lastIndexOf("}");
       if (lastBrace !== -1 && lastBrace < cleanText.length - 1) {
         cleanText = cleanText.substring(0, lastBrace + 1);
-        console.log('🧹 Removed text after last brace');
+        console.log("🧹 Removed text after last brace");
       }
-      
-      console.log('🧽 Cleaned text:', cleanText);
-      
+
+      // 🔧 Repair cut-off strings or missing quotes/braces
+      if (cleanText.startsWith("{") && !cleanText.endsWith("}")) {
+        console.warn("⚙️ Detected truncated JSON, attempting auto-repair…");
+
+        // Common cleanup for unfinished quotes
+        if (cleanText.endsWith('"')) cleanText = cleanText.slice(0, -1);
+        if (cleanText.includes("\n")) cleanText = cleanText.replace(/\n/g, " ");
+
+        // Try to close arrays/objects gracefully
+        const openBraces = (cleanText.match(/{/g) || []).length;
+        const closeBraces = (cleanText.match(/}/g) || []).length;
+        if (closeBraces < openBraces) cleanText += "}";
+
+        const openBrackets = (cleanText.match(/\[/g) || []).length;
+        const closeBrackets = (cleanText.match(/]/g) || []).length;
+        if (closeBrackets < openBrackets) cleanText += "]";
+
+        // Last-resort closing
+        if (!cleanText.endsWith("}")) cleanText += "}";
+      }
+
+      console.log("🧽 Cleaned text:", cleanText);
+
       // Try to parse the JSON
       const parsed = JSON.parse(cleanText);
-      console.log('✅ Successfully parsed feedback!');
-      console.log('📊 Parsed data:', parsed);
-      
+      console.log("✅ Successfully parsed feedback!");
+      console.log("📊 Parsed data:", parsed);
+
       // Validate that we have the expected structure
       if (!parsed.overallScore || !parsed.encouragement) {
-        console.warn('⚠️ Parsed JSON missing required fields, using default');
+        console.warn("⚠️ Parsed JSON missing required fields, using default");
         return this.getDefaultFeedback();
       }
-      
+
       return parsed;
     } catch (error) {
-      console.error('❌ JSON parsing failed:', error.message);
-      console.error('❌ Failed to parse text:', feedbackText);
-      console.warn('⚠️ Using default feedback due to parsing failure');
-      return this.getDefaultFeedback();
+      console.error("❌ JSON parsing failed:", error.message);
+      console.error("❌ Failed to parse text:", feedbackText);
+      // ✅ Try a second repair pass for missing braces
+      try {
+        console.warn("⚙️ Second repair attempt for truncated JSON...");
+        const repaired = feedbackText.trim().endsWith("}")
+          ? feedbackText
+          : feedbackText + "}";
+        const parsedRetry = JSON.parse(repaired);
+        console.log("✅ Repaired and parsed successfully!");
+        return parsedRetry;
+      } catch {
+        console.warn("⚠️ Using default feedback due to parsing failure");
+        return this.getDefaultFeedback();
+      }
     }
   }
 
   getDefaultFeedback() {
-    console.warn('⚠️ RETURNING DEFAULT FEEDBACK - API CALL FAILED');
+    console.warn("⚠️ RETURNING DEFAULT FEEDBACK - API CALL FAILED");
     return {
       overallScore: 8,
       encouragement: "Great job writing! You've shared some wonderful ideas.",
       strengths: [
         "You followed the prompt well",
-        "Your writing shows creativity"
+        "Your writing shows creativity",
       ],
       suggestions: [
         {
           type: "structure",
           issue: "Could add more details",
           suggestion: "Try adding describing words",
-          example: "Instead of 'cat', try 'fluffy orange cat'"
-        }
+          example: "Instead of 'cat', try 'fluffy orange cat'",
+        },
       ],
-      nextSteps: [
-        "Try writing longer sentences",
-        "Add more describing words"
-      ],
+      nextSteps: ["Try writing longer sentences", "Add more describing words"],
       grammarCheck: {
         errors: 0,
-        corrections: []
+        corrections: [],
       },
       vocabularyLevel: "beginner",
       creativityScore: 7,
       writingTips: [
         "Take your time and think about each word",
-        "Read your writing out loud to check if it sounds right"
-      ]
+        "Read your writing out loud to check if it sounds right",
+      ],
     };
   }
 
@@ -214,8 +338,8 @@ CRITICAL: Return ONLY the JSON object. No markdown. No backticks. No explanatory
     if (!currentText || currentText.length < 15) return null;
 
     try {
-      console.log('⏱️ Getting real-time feedback for:', currentText);
-      
+      console.log("⏱️ Getting real-time feedback for:", currentText);
+
       const feedbackPrompt = `You are an encouraging AI writing tutor for children with autism. The student is currently writing and needs brief encouragement.
 
 WRITING PROMPT: "${prompt}"
@@ -234,66 +358,72 @@ Return ONLY the JSON object. No markdown. No backticks. No extra text.`;
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
 
       const response = await fetch(requestUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: feedbackPrompt }]
-          }],
+          contents: [
+            {
+              parts: [{ text: feedbackPrompt }],
+            },
+          ],
           generationConfig: {
             temperature: 0.8,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 256,
-          }
-        })
+            maxOutputTokens: 10000,
+          },
+        }),
       });
 
       if (!response.ok) {
-        console.log('Real-time feedback API failed, skipping...');
+        console.log("Real-time feedback API failed, skipping...");
         return null;
       }
 
       const data = await response.json();
       const result = data.candidates[0].content.parts[0].text;
-      
-      console.log('⏱️ Real-time raw response:', result);
-      
+
+      console.log("⏱️ Real-time raw response:", result);
+
       // Clean and parse the result
       let cleanText = result.trim();
-      if (cleanText.startsWith('```json')) {
-        cleanText = cleanText.replace(/^```json\s*\n?/, '').replace(/\n?\s*```$/, '');
-      } else if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/^```\s*\n?/, '').replace(/\n?\s*```$/, '');
+      if (cleanText.startsWith("```json")) {
+        cleanText = cleanText
+          .replace(/^```json\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
+      } else if (cleanText.startsWith("```")) {
+        cleanText = cleanText
+          .replace(/^```\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
       }
-      
+
       // Extract JSON
-      const firstBrace = cleanText.indexOf('{');
-      const lastBrace = cleanText.lastIndexOf('}');
+      const firstBrace = cleanText.indexOf("{");
+      const lastBrace = cleanText.lastIndexOf("}");
       if (firstBrace !== -1 && lastBrace !== -1) {
         cleanText = cleanText.substring(firstBrace, lastBrace + 1);
       }
-      
+
       const parsed = JSON.parse(cleanText);
-      console.log('✅ Real-time feedback parsed:', parsed);
+      console.log("✅ Real-time feedback parsed:", parsed);
       return parsed;
     } catch (error) {
-      console.error('❌ Error getting real-time feedback:', error);
+      console.error("❌ Error getting real-time feedback:", error);
       return null;
     }
   }
 
   async getWritingHints(currentText, prompt, goal) {
     try {
-      console.log('💡 Getting writing hints...');
-      
+      console.log("💡 Getting writing hints...");
+
       const hintsPrompt = `You are an AI writing tutor for children with autism. Look at what the student has written and give them 3-4 specific, actionable hints for what to do next.
 
 WRITING PROMPT: "${prompt}"
 GOAL: "${goal}"
-CURRENT TEXT: "${currentText || 'Nothing written yet'}"
+CURRENT TEXT: "${currentText || "Nothing written yet"}"
 
 Provide helpful hints in this EXACT JSON format (no markdown, no extra text):
 
@@ -313,53 +443,59 @@ Make the hints specific to what they've written so far. If they haven't written 
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
 
       const response = await fetch(requestUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: hintsPrompt }]
-          }],
+          contents: [
+            {
+              parts: [{ text: hintsPrompt }],
+            },
+          ],
           generationConfig: {
             temperature: 0.7,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 512,
-          }
-        })
+            maxOutputTokens: 10000,
+          },
+        }),
       });
 
       if (!response.ok) {
-        console.log('Hints API failed, using defaults...');
+        console.log("Hints API failed, using defaults...");
         return this.getDefaultHints(currentText);
       }
 
       const data = await response.json();
       const result = data.candidates[0].content.parts[0].text;
-      
-      console.log('💡 Hints raw response:', result);
-      
+
+      console.log("💡 Hints raw response:", result);
+
       // Clean and parse the result
       let cleanText = result.trim();
-      if (cleanText.startsWith('```json')) {
-        cleanText = cleanText.replace(/^```json\s*\n?/, '').replace(/\n?\s*```$/, '');
-      } else if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/^```\s*\n?/, '').replace(/\n?\s*```$/, '');
+      if (cleanText.startsWith("```json")) {
+        cleanText = cleanText
+          .replace(/^```json\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
+      } else if (cleanText.startsWith("```")) {
+        cleanText = cleanText
+          .replace(/^```\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
       }
-      
+
       // Extract JSON
-      const firstBrace = cleanText.indexOf('{');
-      const lastBrace = cleanText.lastIndexOf('}');
+      const firstBrace = cleanText.indexOf("{");
+      const lastBrace = cleanText.lastIndexOf("}");
       if (firstBrace !== -1 && lastBrace !== -1) {
         cleanText = cleanText.substring(firstBrace, lastBrace + 1);
       }
-      
+
       const parsed = JSON.parse(cleanText);
-      console.log('✅ Hints parsed:', parsed);
+      console.log("✅ Hints parsed:", parsed);
       return parsed;
     } catch (error) {
-      console.error('❌ Error getting hints:', error);
+      console.error("❌ Error getting hints:", error);
       return this.getDefaultHints(currentText);
     }
   }
@@ -371,10 +507,10 @@ Make the hints specific to what they've written so far. If they haven't written 
           "Start by writing one sentence about your main idea",
           "Use simple words that you know well",
           "Think about the question in the prompt",
-          "Take your time and write what you think"
+          "Take your time and write what you think",
         ],
         nextStep: "Try writing your first sentence",
-        encouragement: "You can do this! Every writer starts with one word."
+        encouragement: "You can do this! Every writer starts with one word.",
       };
     } else {
       return {
@@ -382,18 +518,18 @@ Make the hints specific to what they've written so far. If they haven't written 
           "Add more details to what you've written",
           "Use describing words like colors, sizes, or feelings",
           "Think about what happens next",
-          "Read what you wrote and add one more sentence"
+          "Read what you wrote and add one more sentence",
         ],
         nextStep: "Keep going with your ideas",
-        encouragement: "Great start! You're doing wonderful work."
+        encouragement: "Great start! You're doing wonderful work.",
       };
     }
   }
 
   async generatePrompt(difficulty = "beginner", topic = "personal") {
     try {
-      console.log('🎯 Generating new prompt...', { difficulty, topic });
-      
+      console.log("🎯 Generating new prompt...", { difficulty, topic });
+
       const promptRequest = `Generate a creative writing prompt for a child with autism at ${difficulty} level about ${topic}.
 
 Requirements:
@@ -419,48 +555,50 @@ Return ONLY the JSON object, no other text.`;
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
 
       const response = await fetch(requestUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: promptRequest }]
-          }],
+          contents: [
+            {
+              parts: [{ text: promptRequest }],
+            },
+          ],
           generationConfig: {
             temperature: 0.9,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 1024,
-          }
-        })
+            maxOutputTokens: 10000,
+          },
+        }),
       });
 
       if (!response.ok) {
-        console.error('❌ Error generating prompt:', response.status);
+        console.error("❌ Error generating prompt:", response.status);
         return this.getDefaultPrompt();
       }
 
       const data = await response.json();
       const result = data.candidates[0].content.parts[0].text;
-      
+
       // Clean and parse the result
       let cleanText = result.trim();
-      if (cleanText.startsWith('```json')) {
-        cleanText = cleanText.replace(/```json\n?/, '').replace(/\n?```$/, '');
+      if (cleanText.startsWith("```json")) {
+        cleanText = cleanText.replace(/```json\n?/, "").replace(/\n?```$/, "");
       }
-      if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/```\n?/, '').replace(/\n?```$/, '');
+      if (cleanText.startsWith("```")) {
+        cleanText = cleanText.replace(/```\n?/, "").replace(/\n?```$/, "");
       }
-      
+
       const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        console.log('✅ Generated new prompt:', parsed);
+        console.log("✅ Generated new prompt:", parsed);
         return parsed;
       }
     } catch (error) {
-      console.error('❌ Error generating prompt:', error);
+      console.error("❌ Error generating prompt:", error);
     }
 
     return this.getDefaultPrompt();
@@ -469,91 +607,100 @@ Return ONLY the JSON object, no other text.`;
   getDefaultPrompt() {
     const prompts = [
       {
-        prompt: "Write about your favorite animal. What does it look like? What does it like to do?",
+        prompt:
+          "Write about your favorite animal. What does it look like? What does it like to do?",
         goal: "write a structured response",
         expectedLength: "3-5 sentences",
         tips: [
           "Start with what animal you chose",
           "Use describing words like colors and sizes",
-          "Tell us what makes this animal special"
-        ]
+          "Tell us what makes this animal special",
+        ],
       },
       {
-        prompt: "Describe your perfect day. What would you do from morning to night?",
+        prompt:
+          "Describe your perfect day. What would you do from morning to night?",
         goal: "write about experiences and feelings",
         expectedLength: "4-6 sentences",
         tips: [
           "Start with what time you wake up",
           "Think about activities you enjoy",
-          "Include how each activity makes you feel"
-        ]
+          "Include how each activity makes you feel",
+        ],
       },
       {
-        prompt: "Write about a place that makes you happy. What do you see, hear, and feel there?",
+        prompt:
+          "Write about a place that makes you happy. What do you see, hear, and feel there?",
         goal: "use sensory details in writing",
         expectedLength: "4-5 sentences",
         tips: [
           "Name the place first",
           "Use words that describe what you experience with your senses",
-          "Explain why this place is special to you"
-        ]
-      }
+          "Explain why this place is special to you",
+        ],
+      },
     ];
-    
+
     return prompts[Math.floor(Math.random() * prompts.length)];
   }
 
   async testConnection() {
     try {
-      console.log('🧪 Testing Gemini API connection...');
-      console.log('API Key present:', !!this.apiKey);
-      console.log('API URL:', this.apiUrl);
-      
+      console.log("🧪 Testing Gemini API connection...");
+      console.log("API Key present:", !!this.apiKey);
+      console.log("API URL:", this.apiUrl);
+
       if (!this.apiKey) {
-        console.error('❌ No API key configured!');
+        console.error("❌ No API key configured!");
         return false;
       }
-      
+
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
-      
+
       const response = await fetch(requestUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: "Respond with exactly this JSON: {\"test\": \"success\", \"message\": \"Hello, AutiSpark! API is working with Gemini 2.5 Flash!\"}" }]
-          }]
-        })
+          contents: [
+            {
+              parts: [
+                {
+                  text: 'Respond with exactly this JSON: {"test": "success", "message": "Hello, AutiSpark! API is working with Gemini 2.5 Flash!"}',
+                },
+              ],
+            },
+          ],
+        }),
       });
 
-      console.log('🧪 Test response status:', response.status);
-      
+      console.log("🧪 Test response status:", response.status);
+
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ Test response data:', data);
+        console.log("✅ Test response data:", data);
         return true;
       } else {
         const errorText = await response.text();
-        console.error('❌ Test failed:', response.status, errorText);
+        console.error("❌ Test failed:", response.status, errorText);
         return false;
       }
     } catch (error) {
-      console.error('❌ Test connection error:', error);
+      console.error("❌ Test connection error:", error);
       return false;
     }
   }
 
   async answerQuestion(question, currentText, prompt, goal) {
     try {
-      console.log('❓ Answering student question:', question);
-      
+      console.log("❓ Answering student question:", question);
+
       const answerPrompt = `You are a helpful AI writing tutor for children with autism. A student is working on a writing assignment and has asked a question. Provide a clear, encouraging, and specific answer.
 
 WRITING PROMPT: "${prompt}"
 GOAL: "${goal}"
-CURRENT TEXT: "${currentText || 'Nothing written yet'}"
+CURRENT TEXT: "${currentText || "Nothing written yet"}"
 STUDENT QUESTION: "${question}"
 
 Provide a helpful answer in this EXACT JSON format (no markdown, no extra text):
@@ -577,119 +724,137 @@ Make your answer specific to their question and current writing situation. Be en
       const requestUrl = `${this.apiUrl}?key=${this.apiKey}`;
 
       const response = await fetch(requestUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{ text: answerPrompt }]
-          }],
+          contents: [
+            {
+              parts: [{ text: answerPrompt }],
+            },
+          ],
           generationConfig: {
             temperature: 0.7,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 512,
-          }
-        })
+            maxOutputTokens: 10000,
+          },
+        }),
       });
 
       if (!response.ok) {
-        console.log('Question answering API failed, using default...');
+        console.log("Question answering API failed, using default...");
         return this.getDefaultAnswer(question);
       }
 
       const data = await response.json();
       const result = data.candidates[0].content.parts[0].text;
-      
-      console.log('❓ Question answer raw response:', result);
-      
+
+      console.log("❓ Question answer raw response:", result);
+
       // Clean and parse the result
       let cleanText = result.trim();
-      if (cleanText.startsWith('```json')) {
-        cleanText = cleanText.replace(/^```json\s*\n?/, '').replace(/\n?\s*```$/, '');
-      } else if (cleanText.startsWith('```')) {
-        cleanText = cleanText.replace(/^```\s*\n?/, '').replace(/\n?\s*```$/, '');
+      if (cleanText.startsWith("```json")) {
+        cleanText = cleanText
+          .replace(/^```json\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
+      } else if (cleanText.startsWith("```")) {
+        cleanText = cleanText
+          .replace(/^```\s*\n?/, "")
+          .replace(/\n?\s*```$/, "");
       }
-      
+
       // Extract JSON
-      const firstBrace = cleanText.indexOf('{');
-      const lastBrace = cleanText.lastIndexOf('}');
+      const firstBrace = cleanText.indexOf("{");
+      const lastBrace = cleanText.lastIndexOf("}");
       if (firstBrace !== -1 && lastBrace !== -1) {
         cleanText = cleanText.substring(firstBrace, lastBrace + 1);
       }
-      
+
       const parsed = JSON.parse(cleanText);
-      console.log('✅ Question answer parsed:', parsed);
+      console.log("✅ Question answer parsed:", parsed);
       return parsed;
     } catch (error) {
-      console.error('❌ Error answering question:', error);
+      console.error("❌ Error answering question:", error);
       return this.getDefaultAnswer(question);
     }
   }
 
   getDefaultAnswer(question) {
     const lowerQuestion = question.toLowerCase();
-    
-    if (lowerQuestion.includes('start') || lowerQuestion.includes('begin')) {
+
+    if (lowerQuestion.includes("start") || lowerQuestion.includes("begin")) {
       return {
-        answer: "Great question! To start writing, read the prompt carefully and think about one main idea you want to share. Then write that idea in one simple sentence.",
+        answer:
+          "Great question! To start writing, read the prompt carefully and think about one main idea you want to share. Then write that idea in one simple sentence.",
         suggestions: [
           "Read the writing prompt again",
           "Think of one main idea",
           "Write one sentence about that idea",
-          "Don't worry about spelling at first"
+          "Don't worry about spelling at first",
         ],
         encouragement: "Starting is the hardest part, but you can do it!",
         relatedTips: [
           "Every writer starts with just one word",
-          "It's okay if your first sentence isn't perfect"
-        ]
+          "It's okay if your first sentence isn't perfect",
+        ],
       };
-    } else if (lowerQuestion.includes('ideas') || lowerQuestion.includes('think')) {
+    } else if (
+      lowerQuestion.includes("ideas") ||
+      lowerQuestion.includes("think")
+    ) {
       return {
-        answer: "When you need ideas, try thinking about your own experiences! What have you seen, done, or felt that relates to the prompt?",
+        answer:
+          "When you need ideas, try thinking about your own experiences! What have you seen, done, or felt that relates to the prompt?",
         suggestions: [
           "Think about things you've done",
           "Remember places you've been",
           "Consider how things make you feel",
-          "Ask yourself 'what if?' questions"
+          "Ask yourself 'what if?' questions",
         ],
         encouragement: "You have lots of great ideas inside you!",
         relatedTips: [
           "Your own experiences make the best stories",
-          "There are no wrong ideas when you're brainstorming"
-        ]
+          "There are no wrong ideas when you're brainstorming",
+        ],
       };
-    } else if (lowerQuestion.includes('stuck') || lowerQuestion.includes('help')) {
+    } else if (
+      lowerQuestion.includes("stuck") ||
+      lowerQuestion.includes("help")
+    ) {
       return {
-        answer: "Being stuck is normal for all writers! Try taking a deep breath and reading what you've written so far. What comes next?",
+        answer:
+          "Being stuck is normal for all writers! Try taking a deep breath and reading what you've written so far. What comes next?",
         suggestions: [
           "Read your writing out loud",
           "Think about what happens next",
           "Ask yourself 'then what?'",
-          "Take a short break and come back"
+          "Take a short break and come back",
         ],
-        encouragement: "Getting stuck means you're thinking hard - that's good!",
+        encouragement:
+          "Getting stuck means you're thinking hard - that's good!",
         relatedTips: [
           "Professional writers get stuck too",
-          "Sometimes the best ideas come after a short break"
-        ]
+          "Sometimes the best ideas come after a short break",
+        ],
       };
     } else {
       return {
-        answer: "That's a thoughtful question! Remember that writing is about sharing your thoughts and ideas. Take your time and trust yourself.",
+        answer:
+          "That's a thoughtful question! Remember that writing is about sharing your thoughts and ideas. Take your time and trust yourself.",
         suggestions: [
           "Trust your own ideas",
           "Write what you think",
           "Don't worry about being perfect",
-          "Focus on sharing your thoughts clearly"
+          "Focus on sharing your thoughts clearly",
         ],
-        encouragement: "You're asking great questions - that shows you're thinking like a real writer!",
+        encouragement:
+          "You're asking great questions - that shows you're thinking like a real writer!",
         relatedTips: [
           "Good writers ask lots of questions",
-          "Your voice and ideas are important"
-        ]
+          "Your voice and ideas are important",
+        ],
       };
     }
   }

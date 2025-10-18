@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from server.routes import users, placement
+from server.routes import users, placement, feedback
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -14,3 +14,4 @@ app.add_middleware(
 )
 app.include_router(users.router, prefix="/api", tags=["Users"])
 app.include_router(placement.router, prefix="/api", tags=["Placement"])
+app.include_router(feedback.router, prefix="/api/feedback", tags=["feedback"])
