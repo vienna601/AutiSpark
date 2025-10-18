@@ -87,12 +87,26 @@ html, body, #root {
   margin: 0;
 }
 
-/* Optional: ensure subtitle & content appear properly */
-.placementpage-subtitle {
-  color: #524944;
-  font-size: 24px;
-  margin-bottom: 40px;
+.placementpage-title {
+  width: 100%;
   text-align: center;
+  font-size: 70px; /* much bigger */
+  font-weight: 900;
+  color: #524944;
+  margin: 0;
+  margin-top: 50px; /* pushes down from top */
+  margin-bottom: 8px;
+}
+
+/* ====== Subtitle ====== */
+.placementpage-subtitle {
+  width: 100%;
+  text-align: center;
+  color: #60554f;
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 20px; /* pushes down closer to buttons */
 }
 
 /* ====== Header Bar ====== */

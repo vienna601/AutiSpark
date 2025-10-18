@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/PlacementPage.css";
 
-import logoIcon from "../assets/logo.png";
+import logoIcon from "../assets/logo-icon.png";
 import speechIcon from "../assets/speaking.png";
 import writingIcon from "../assets/writing.png";
 import readingIcon from "../assets/reading.png";
@@ -13,10 +13,10 @@ const PlacementPage = () => {
 
   return (
     <div className="placementpage">
+      {/* Title */}
+      <h1 className="placementpage-title">Welcome</h1>
       {/* Subtitle */}
-      <p className="placementpage-subtitle">
-        Please complete the following assessments for the best effects:
-      </p>
+      <p className="placementpage-subtitle">What do you want to work on today?</p>
 
       {/* Button Container */}
       <div className="button-container">
